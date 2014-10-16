@@ -8,7 +8,7 @@ RSpec.describe 'Resource' do
   }
 
   subject(:test_class) do
-    Record ||= Class.new do
+    Paper ||= Class.new do
       include JSONAPI::Consumer::Resource
     end
   end
@@ -46,9 +46,9 @@ RSpec.describe 'Resource' do
   describe '#to_json' do
     subject(:obj_hash) { test_class.new(sample_attrs).to_json }
 
-    it 'has a root key' do
+    it 'has all attributes root key' do
       json_hash = JSON.parse(obj_hash)
-      expect(json_hash.keys).to eql(['record'])
+      expect(json_hash.keys).to eql(['id', 'name', 'content'])
     end
   end
 

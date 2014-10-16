@@ -3,7 +3,7 @@ module JSONAPI::Consumer::Resource
     extend ActiveSupport::Concern
 
     def serializable_hash(options={})
-      @hash = attributes
+      @hash = persisted? ? attributes : attributes.except(self.class.primary_key)
 
       self.each_association do |name, association, options|
         @hash[:links] ||= {}
@@ -57,12 +57,12 @@ module JSONAPI::Consumer::Resource
     end
 
     def to_json(options={})
-      result = serializable_hash(options)
-      if json_key
-        { json_key => result }.to_json
-      else
-        result.to_json
-      end
+      serializable_hash(options).to_json
+      # if json_key
+        # { json_key => result }.to_json
+      # else
+        # result.to_json
+      # end
     end
 
   private

@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency "faraday"
+  spec.add_runtime_dependency "faraday_middleware"
   spec.add_runtime_dependency "activemodel"
   spec.add_runtime_dependency "activesupport"
 
