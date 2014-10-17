@@ -1,0 +1,9 @@
+language: ruby
+cache: bundler
+before_install: 
+  - gem update bundler
+rvm:
+  - 2.1.3
+  - jruby-19mode
+  - ruby-head
+  - jruby-head

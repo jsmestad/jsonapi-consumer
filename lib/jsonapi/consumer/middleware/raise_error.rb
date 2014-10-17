@@ -1,9 +1,9 @@
-module JSONAPI::Consumer
+module JSONAPI::Consumer::Middleware
   class RaiseError < Faraday::Response::Middleware
     def on_complete(env)
       return if (status = env[:status]) < 400
       message = "#{env[:status]} #{env[:method].upcase} #{env[:url]} #{env[:body]}"
-      raise JSONAPI::Consumer::Errors.class_for_error_code(status).new(message, response_values(env))
+      raise ::JSONAPI::Consumer::Errors.class_for_error_code(status).new(message, response_values(env))
     end
 
     def response_values(env)

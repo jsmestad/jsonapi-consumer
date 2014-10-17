@@ -4,12 +4,35 @@ module JSONAPI::Consumer
 
     included do
       extend ActiveModel::Naming
+
+      class << self
+        attr_writer :host
+      end
     end
 
     include AttributesConcern
     include AssociationConcern
     include FindersConcern
     include SerializerConcern
+    include ConnectionConcern
+
+    module ClassMethods
+      def json_key
+        self.name.demodulize.pluralize.underscore
+      end
+
+      def host
+        @host || raise(NotImplementedError, 'host was not set')
+      end
+
+      def path
+        json_key
+      end
+
+      def ssl
+        {}
+      end
+    end
 
     # FIXME
     # extend ActiveModel::Callbacks
@@ -23,22 +46,6 @@ module JSONAPI::Consumer
       self.attributes = params.except(*association_names) if params
       super()
     end
-
-    class << self
-      attr_accessor :host
-
-      def host
-        raise NotImplementedError, 'host was not set'
-      end
-
-      def ssl
-        {}
-      end
-    end
-
-    # def param_key
-      # self.class.param_key
-    # end
 
   private
 
