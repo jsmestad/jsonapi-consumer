@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["justin.smestad@gmail.com"]
   spec.summary       = %q{JSONAPI client framework for API consumption.}
   spec.description   = %q{Create ActiveModel-compliant objects for your JSONAPI-based API}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/jsmestad/jsonapi-consumer"
   spec.license       = "Apache-2.0"
 
   spec.files         = `git ls-files -z`.split("\x0") - ['Guardfile', '.travis.yml']
