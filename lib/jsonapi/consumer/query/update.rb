@@ -3,7 +3,8 @@ module JSONAPI::Consumer::Query
     self.request_method = :put
 
     def build_params(args)
-      @params = {klass.json_key => args}
+      args = args.dup
+      @params = {klass.json_key => args.except(klass.primary_key)}
     end
   end
 end

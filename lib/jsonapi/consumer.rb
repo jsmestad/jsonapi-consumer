@@ -23,6 +23,7 @@ require "jsonapi/consumer/middleware/raise_error"
 require "jsonapi/consumer/query"
 require "jsonapi/consumer/query/base"
 require "jsonapi/consumer/query/create"
+require "jsonapi/consumer/query/delete"
 require "jsonapi/consumer/query/find"
 require "jsonapi/consumer/query/update"
 

@@ -11,7 +11,13 @@ module JSONAPI::Consumer::Query
       build_params(payload)
       # @headers = klass.default_headers.dup
 
-      @path = klass.path
+      @path = begin
+                if payload.is_a?(Hash) && payload.has_key?(klass.primary_key)
+                  [klass.path, payload.delete(klass.primary_key)].join('/')
+                else
+                  klass.path
+                end
+              end
       # @path = begin
         # p = klass.path(@params)
         # if @params.has_key?(klass.primary_key) && !@params[klass.primary_key].is_a?(Array)

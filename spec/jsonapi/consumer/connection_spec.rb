@@ -10,7 +10,7 @@ RSpec.describe 'Connection' do
 
   let(:obj) { test_class.new(name: 'jsonapi.example') }
 
-  describe '#all' do
+  describe '.all' do
     it 'returns all results as objects' do
       stub_request(:get, "http://localhost:3000/api/records")
         .to_return(headers: {content_type: "application/json"}, body: {
@@ -29,7 +29,7 @@ RSpec.describe 'Connection' do
     end
   end
 
-  describe '#find' do
+  describe '.find' do
     it 'returns proper objects' do
       stub_request(:get, "http://localhost:3000/api/records?id=1")
         .to_return(headers: {content_type: "application/json"}, body: {
@@ -49,13 +49,14 @@ RSpec.describe 'Connection' do
   end
 
   describe '#save' do
-    it 'can save successfully' do
+    it 'can save successfully if called on a new item' do
       stub_request(:post, "http://localhost:3000/api/records")
         .to_return(headers: {content_type: "application/json"}, body: {
           records: [
             {id: '1', name: "foobar.example", created_at: "2014-10-16T18:49:40Z", updated_at: "2014-10-18T18:59:40Z"}
           ]
         }.to_json)
+
       expect(obj.save).to eql(true)
 
       expect(obj.id).to eql('1')
@@ -67,6 +68,33 @@ RSpec.describe 'Connection' do
       expect(obj).to respond_to(:created_at)
       expect(obj).to respond_to(:updated_at)
       expect(obj.persisted?).to eql(true)
+    end
+
+    it 'can update when called on an existing item' do
+      stub_request(:put, "http://localhost:3000/api/records/1")
+        .to_return(headers: {content_type: "application/json"}, body: {
+          records: [
+            {id: '1', name: "foobar.example", created_at: "2014-10-16T18:49:40Z", updated_at: "2016-10-18T18:59:40Z"}
+          ]
+        }.to_json)
+
+      obj.id = '1'
+      obj.updated_at = "2014-10-18T18:59:40Z"
+      expect(obj.updated_at).to eql("2014-10-18T18:59:40Z")
+
+      expect(obj.save).to eql(true)
+      expect(obj.updated_at).to eql("2016-10-18T18:59:40Z")
+    end
+  end
+
+  describe '#destroy' do
+    before { obj.id = '1' }
+
+    it 'returns true when successful' do
+      stub_request(:delete, "http://localhost:3000/api/records/1")
+        .to_return(status: 204, body: nil)
+
+      expect(obj.destroy).to eql(true)
     end
   end
 end

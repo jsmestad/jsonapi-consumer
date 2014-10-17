@@ -4,9 +4,13 @@ module JSONAPI::Consumer
 
     module ClassMethods
       def parse(response)
-        data = response.body
-        result_data = data.fetch(json_key, [])
-        result_data.map {|attrs| new(attrs)}
+        if response.status == 204
+          true
+        else
+          data = response.body
+          result_data = data.fetch(json_key, [])
+          result_data.map {|attrs| new(attrs)}
+        end
       end
 
       # :nodoc:
@@ -31,14 +35,22 @@ module JSONAPI::Consumer
     end
 
     def save
-      # query = persisted? ?
-        # Query::Update.new(self.class, attributes) :
-        # Query::Create.new(self.class, attributes)
-      query = Query::Create.new(self.class, self.serializable_hash)
+      query = persisted? ?
+        Query::Update.new(self.class, self.serializable_hash) :
+        Query::Create.new(self.class, self.serializable_hash)
 
       results = run_request(query)
       self.attributes = results.first.attributes
       true
+    end
+
+    def destroy
+      if run_request(Query::Delete.new(self.class, self.serializable_hash))
+        self.attributes.clear
+        true
+      else
+        false
+      end
     end
 
   private
