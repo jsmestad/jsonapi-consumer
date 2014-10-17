@@ -2,11 +2,6 @@ module JSONAPI::Consumer::Resource
   module AssociationConcern
     extend ActiveSupport::Concern
 
-    included do
-      class << self
-      end
-    end
-
     module ClassMethods
       attr_writer :_associations
 
@@ -55,6 +50,7 @@ module JSONAPI::Consumer::Resource
     def each_association(&block)
       self.class._associations.dup.each do |name, options|
         association = self.send(name)
+        # TODO remove
         # serializer_class = ActiveModel::Serializer.serializer_for(association)
         # serializer = serializer_class.new(association)
 

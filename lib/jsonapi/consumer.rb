@@ -17,11 +17,14 @@ end
 require "jsonapi/consumer/errors"
 
 require "jsonapi/consumer/middleware"
+require "jsonapi/consumer/middleware/parse_json"
 require "jsonapi/consumer/middleware/raise_error"
 
 require "jsonapi/consumer/query"
 require "jsonapi/consumer/query/base"
 require "jsonapi/consumer/query/create"
+require "jsonapi/consumer/query/find"
+require "jsonapi/consumer/query/update"
 
 require "jsonapi/consumer/resource/association_concern"
 require "jsonapi/consumer/resource/attributes_concern"

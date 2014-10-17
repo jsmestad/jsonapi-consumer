@@ -58,17 +58,7 @@ module JSONAPI::Consumer::Resource
 
     def to_json(options={})
       serializable_hash(options).to_json
-      # if json_key
-        # { json_key => result }.to_json
-      # else
-        # result.to_json
-      # end
     end
 
-  private
-
-    def json_key
-      self.class.name.demodulize.underscore
-    end
   end
 end

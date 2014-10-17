@@ -3,9 +3,12 @@ module JSONAPI::Consumer::Resource
     extend ActiveSupport::Concern
 
     module ClassMethods
-      def find(id)
-        raise Errors::NotFound if id.nil?
-        response = http(:get, id, opts)
+      def all(options={})
+        _run_request(JSONAPI::Consumer::Query::Find.new(self, options))
+      end
+
+      def find(options)
+        _run_request(JSONAPI::Consumer::Query::Find.new(self, options))
       end
 
       def primary_key
