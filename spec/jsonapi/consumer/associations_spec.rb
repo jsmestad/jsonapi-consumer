@@ -37,6 +37,22 @@ RSpec.describe 'Associations', 'has_many' do
         user_instance.posts = nil
       }.to change{user_instance.posts}.from(['1']).to(nil)
     end
+
+    describe 'links parsing' do
+      let(:return_hash) {
+        {
+          users: [
+            {id: '1', username: 'foo', links: {posts: ['a', 'b', 'c']}}
+          ]
+        }.with_indifferent_access
+      }
+
+      subject(:obj) { user_class.parse(OpenStruct.new(status: '200', body: return_hash)).first }
+
+      it 'sets the association' do
+        expect(obj.posts).to eql(['a','b','c'])
+      end
+    end
   end
 
   describe 'the links payload' do
@@ -117,6 +133,22 @@ RSpec.describe 'Associations', 'has_one' do
       expect {
         post_instance.author = nil
       }.to change{post_instance.author}.from('1').to(nil)
+    end
+  end
+
+  describe 'links parsing' do
+    let(:return_hash) {
+      {
+        posts: [
+          {id: '1', title: 'foobarbaz', links: {author: 'asdf'}}
+        ]
+      }.with_indifferent_access
+    }
+
+    subject(:obj) { post_class.parse(OpenStruct.new(status: '200', body: return_hash)).first }
+
+    it 'sets the association' do
+      expect(obj.author).to eql('asdf')
     end
   end
 end
