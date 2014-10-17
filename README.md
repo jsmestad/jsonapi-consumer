@@ -2,6 +2,8 @@
 
 An ActiveModel-compliant consumer framework for communicating with JSONAPI-based APIs.
 
+[![Build Status](https://travis-ci.org/jsmestad/jsonapi-consumer.svg?branch=master)](https://travis-ci.org/jsmestad/jsonapi-consumer)
+
 ## Installation
 
 Add this line to your application's Gemfile:
