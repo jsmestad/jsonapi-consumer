@@ -19,6 +19,7 @@ require "jsonapi/consumer/errors"
 require "jsonapi/consumer/middleware"
 require "jsonapi/consumer/middleware/parse_json"
 require "jsonapi/consumer/middleware/raise_error"
+require "jsonapi/consumer/middleware/request_timeout"
 
 require "jsonapi/consumer/query"
 require "jsonapi/consumer/query/base"
