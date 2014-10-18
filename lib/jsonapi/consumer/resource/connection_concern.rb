@@ -9,7 +9,7 @@ module JSONAPI::Consumer
         else
           data = response.body
           result_data = data.fetch(json_key, [])
-          result_data.map do |attrs|
+          d = result_data.map do |attrs|
             attrs = attrs.dup
             if attrs.has_key?(:links)
               attrs.merge!(attrs.delete(:links))
@@ -73,11 +73,13 @@ module JSONAPI::Consumer
 
     # :nodoc:
     def run_request(*args)
-      self.class._run_request(*args)
-      errors.clear
-    rescue JSONAPI::Consumer::Errors::BadRequest => e
-      e.errors.map do |error|
-        process_error(error.dup)
+      begin
+        self.errors.clear
+        request = self.class._run_request(*args)
+      rescue JSONAPI::Consumer::Errors::BadRequest => e
+        e.errors.map do |error|
+          process_error(error.dup)
+        end
       end
     end
 
