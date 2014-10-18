@@ -8,6 +8,7 @@ module JSONAPI::Consumer::Resource
       end
 
       def find(options)
+        options = {self.primary_key => options} unless options.is_a?(Hash)
         _run_request(JSONAPI::Consumer::Query::Find.new(self, options))
       end
 

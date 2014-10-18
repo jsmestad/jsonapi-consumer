@@ -8,8 +8,7 @@ module JSONAPI::Consumer::Query
 
     def initialize(klass, payload)
       @klass = klass
-      build_params(payload)
-      # @headers = klass.default_headers.dup
+      build_params(payload) if payload.is_a?(Hash) && payload.keys != [klass.primary_key]
 
       @path = begin
                 if payload.is_a?(Hash) && payload.has_key?(klass.primary_key)
@@ -18,13 +17,6 @@ module JSONAPI::Consumer::Query
                   klass.path
                 end
               end
-      # @path = begin
-        # p = klass.path(@params)
-        # if @params.has_key?(klass.primary_key) && !@params[klass.primary_key].is_a?(Array)
-          # p = File.join(p, @params.delete(klass.primary_key).to_s)
-        # end
-        # p
-      # end
     end
 
     def build_params(args)
