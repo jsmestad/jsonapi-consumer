@@ -31,7 +31,7 @@ RSpec.describe 'Connection' do
 
   describe '.find' do
     it 'returns proper objects' do
-      stub_request(:get, "http://localhost:3000/api/records?id=1")
+      stub_request(:get, "http://localhost:3000/api/records/1")
         .to_return(headers: {content_type: "application/json"}, body: {
           records: [
             {id: '1', name: "foobar.example"}
