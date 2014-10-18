@@ -30,7 +30,7 @@ module JSONAPI::Consumer
           Faraday.new(url: self.host, ssl: self.ssl) do |conn|
             conn.request :json
 
-            conn.response :logger
+            # conn.response :logger
             conn.use Middleware::ParseJson
 
             conn.use Middleware::RaiseError
