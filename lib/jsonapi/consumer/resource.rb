@@ -5,6 +5,8 @@ module JSONAPI::Consumer
     included do
       extend ActiveModel::Naming
 
+      attr_reader :errors
+
       class << self
         attr_writer :host
       end
@@ -32,6 +34,16 @@ module JSONAPI::Consumer
       def ssl
         {}
       end
+
+    private
+
+      def human_attribute_name(attr, options = {})
+        attr
+      end
+
+      def lookup_ancestors
+        [self]
+      end
     end
 
     # FIXME
@@ -44,10 +56,15 @@ module JSONAPI::Consumer
       end
 
       self.attributes = params.except(*association_names) if params
+      @errors = ActiveModel::Errors.new(self)
       super()
     end
 
   private
+
+    def read_attribute_for_validation(attr)
+      read_attribute(attr)
+    end
 
     def method_missing(method, *args, &block)
       if respond_to_without_attributes?(method, true)

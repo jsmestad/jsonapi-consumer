@@ -51,7 +51,7 @@ RSpec.describe 'Connection' do
   describe '#save' do
     it 'can save successfully if called on a new item' do
       stub_request(:post, "http://localhost:3000/api/records")
-        .to_return(headers: {content_type: "application/json"}, body: {
+        .to_return(headers: {content_type: "application/json"}, status: 201, body: {
           records: [
             {id: '1', name: "foobar.example", created_at: "2014-10-16T18:49:40Z", updated_at: "2014-10-18T18:59:40Z"}
           ]

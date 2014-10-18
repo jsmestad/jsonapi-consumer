@@ -20,6 +20,12 @@ module JSONAPI::Consumer
     class ConnectionNotConfigured < StandardError; end
     class RecordNotSaved < StandardError; end
 
+    class ServerNotResponding < StandardError
+      def message
+        'Server did not respond in a timely fashion. Is it running?'
+      end
+    end
+
     # Error constants
     BAD_REQUEST                     = 400
     NOT_AUTHORIZED                  = 401
@@ -33,21 +39,20 @@ module JSONAPI::Consumer
 
     # Base subclass for all response errors
     class ResponseError < StandardError
-      attr_accessor :response_values
+      attr_accessor :response
 
-      def initialize(message=nil, response_values=nil)
+      def initialize(message=nil, response=nil)
         super(message)
-        self.response_values = response_values
+        self.response = response
       end
 
       def errors
-        response_values[:body]['errors'] rescue nil
+        response[:body].fetch('errors', [])
       end
 
-      # def error_messages
-        # errors.collect do |attr, value|
-        # response_values[:body]['error_message'] rescue nil
-      # end
+      def response_body
+        response[:body]
+      end
     end
 
     class << self

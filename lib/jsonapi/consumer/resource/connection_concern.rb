@@ -31,6 +31,7 @@ module JSONAPI::Consumer
             conn.request :json
 
             # conn.response :logger
+            conn.use Middleware::RequestTimeout
             conn.use Middleware::ParseJson
 
             conn.use Middleware::RaiseError
@@ -40,14 +41,23 @@ module JSONAPI::Consumer
       end
     end
 
+    def is_valid?
+      errors.empty?
+    end
+
     def save
       query = persisted? ?
         Query::Update.new(self.class, self.serializable_hash) :
         Query::Create.new(self.class, self.serializable_hash)
 
       results = run_request(query)
-      self.attributes = results.first.attributes
-      true
+
+      if self.errors.empty?
+        self.attributes = results.first.attributes
+        true
+      else
+        false
+      end
     end
 
     def destroy
@@ -64,6 +74,22 @@ module JSONAPI::Consumer
     # :nodoc:
     def run_request(*args)
       self.class._run_request(*args)
+      errors.clear
+    rescue JSONAPI::Consumer::Errors::BadRequest => e
+      e.errors.map do |error|
+        process_error(error.dup)
+      end
+    end
+
+    # :nodoc:
+    def process_error(err)
+      field = err.fetch('path', '')
+      attr = field.match(/\A\/\/(\w+)\z/)[1]
+      if attr && has_attribute?(attr)
+        self.errors.add(attr.to_sym, err.fetch('detail', ''))
+      else
+        self.errors.add(:base, err.fetch('detail', ''))
+      end
     end
   end
 end
