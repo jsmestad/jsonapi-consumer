@@ -1,5 +1,5 @@
 
-(0.1.0.pre) / 2014-10-19
+0.1.0.pre (unreleased) / 2014-10-19
 ==================
 
   * Add yarddoc to associations_concern
