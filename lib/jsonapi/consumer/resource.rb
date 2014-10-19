@@ -46,10 +46,6 @@ module JSONAPI::Consumer
       end
     end
 
-    # FIXME
-    # extend ActiveModel::Callbacks
-    # define_model_callbacks :save, :create, :destroy
-
     def initialize(params={})
       params.slice(*association_names).each do |key, value|
         set_association(key, value)
