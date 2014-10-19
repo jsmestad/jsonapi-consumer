@@ -3,7 +3,13 @@ RSpec.describe 'Associations', 'has_many' do
     User ||= Class.new do
       include JSONAPI::Consumer::Resource
 
-      has_many :posts
+      has_many :posts, class_name: 'Post'
+    end
+  end
+
+  let!(:post_class) do
+    Post ||= Class.new do
+      include JSONAPI::Consumer::Resource
     end
   end
 
@@ -22,20 +28,20 @@ RSpec.describe 'Associations', 'has_many' do
     it 'can be added as a single value' do
       expect {
         user_instance.posts = '1'
-      }.to change{user_instance.posts}.from(nil).to(['1'])
+      }.to change{user_instance.post_ids}.from(nil).to(['1'])
     end
 
     it 'can be added as a list of items' do
       expect {
         user_instance.posts = ['1','2','3']
-      }.to change{user_instance.posts}.from(nil).to(['1','2','3'])
+      }.to change{user_instance.post_ids}.from(nil).to(['1','2','3'])
     end
 
     it 'can be blanked out' do
       user_instance.posts = '1'
       expect {
         user_instance.posts = nil
-      }.to change{user_instance.posts}.from(['1']).to(nil)
+      }.to change{user_instance.post_ids}.from(['1']).to(nil)
     end
 
     describe 'links parsing' do
@@ -50,7 +56,7 @@ RSpec.describe 'Associations', 'has_many' do
       subject(:obj) { user_class.parse(OpenStruct.new(status: '200', body: return_hash)).first }
 
       it 'sets the association' do
-        expect(obj.posts).to eql(['a','b','c'])
+        expect(obj.post_ids).to eql(['a','b','c'])
       end
     end
   end
@@ -69,44 +75,56 @@ RSpec.describe 'Associations', 'belongs_to' do
     Comment ||= Class.new do
       include JSONAPI::Consumer::Resource
 
-      belongs_to :comment
-      belongs_to :user
+      # belongs_to :comment, class_name: 'Comment'
+      belongs_to :user, class_name: 'User'
+    end
+  end
+
+  let!(:user_class) do
+    User ||= Class.new do
+      include JSONAPI::Consumer::Resource
     end
   end
 
   subject(:comment_instance) { comment_class.new }
 
   it 'lists association names in #association_names' do
-    expect(comment_instance.association_names).to eql([:comment, :user])
+    expect(comment_instance.association_names).to eql([:user])
   end
 
   describe 'defined accessors for assocation' do
-    it { is_expected.to respond_to(:comment) }
-    it { is_expected.to respond_to(:comment=) }
+    it { is_expected.to respond_to(:user) }
+    it { is_expected.to respond_to(:user=) }
   end
 
   describe 'adding objects to belongs_to relationship' do
     it 'can be added as a single value' do
       expect {
-        comment_instance.comment = '1'
-      }.to change{comment_instance.comment}.from(nil).to('1')
+        comment_instance.user = '1'
+      }.to change{comment_instance.user_id}.from(nil).to('1')
     end
 
     it 'can be blanked out' do
-      comment_instance.comment = '1'
+      comment_instance.user = '1'
       expect {
-        comment_instance.comment = nil
-      }.to change{comment_instance.comment}.from('1').to(nil)
+        comment_instance.user = nil
+      }.to change{comment_instance.user_id}.from('1').to(nil)
     end
   end
 end
 
 RSpec.describe 'Associations', 'has_one' do
   let(:post_class) do
-    Post ||= Class.new do
+    Poster ||= Class.new do
       include JSONAPI::Consumer::Resource
 
-      has_one :author
+      has_one :author, class_name: 'Customer'
+    end
+  end
+
+  let!(:user_class) do
+    Customer ||= Class.new do
+      include JSONAPI::Consumer::Resource
     end
   end
 
@@ -125,30 +143,32 @@ RSpec.describe 'Associations', 'has_one' do
     it 'can be added as a single value' do
       expect {
         post_instance.author = '1'
-      }.to change{post_instance.author}.from(nil).to('1')
+      }.to change{post_instance.author_id}.from(nil).to('1')
     end
 
     it 'can be blanked out' do
       post_instance.author = '1'
       expect {
         post_instance.author = nil
-      }.to change{post_instance.author}.from('1').to(nil)
+      }.to change{post_instance.author_id}.from('1').to(nil)
     end
   end
 
   describe 'links parsing' do
     let(:return_hash) {
       {
-        posts: [
+        posters: [
           {id: '1', title: 'foobarbaz', links: {author: 'asdf'}}
         ]
       }.with_indifferent_access
     }
 
-    subject(:obj) { post_class.parse(OpenStruct.new(status: '200', body: return_hash)).first }
+    subject(:obj) {  }
 
     it 'sets the association' do
-      expect(obj.author).to eql('asdf')
+      obj = post_class.parse(OpenStruct.new(status: '200', body: return_hash)).first
+      expect(obj.author_id).to eql('asdf')
+      expect(obj.author).to be_a(user_class)
     end
   end
 end

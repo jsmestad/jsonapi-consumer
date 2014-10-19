@@ -3,13 +3,13 @@ RSpec.describe 'Serializer' do
     SerializerTestClass ||= Class.new do
       include JSONAPI::Consumer::Resource
 
-      has_many :users
-      has_one :owner
+      has_many :users, class_name: 'Account'
+      has_one :owner, class_name: 'Owner'
     end
   end
 
   let(:owner) {
-    Class.new do
+    Owner ||= Class.new do
       include JSONAPI::Consumer::Resource
 
       def to_param
@@ -19,7 +19,7 @@ RSpec.describe 'Serializer' do
   }
 
   let(:user) {
-    Class.new do
+    Account ||= Class.new do
       include JSONAPI::Consumer::Resource
     end
   }

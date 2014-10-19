@@ -24,7 +24,6 @@ module JSONAPI::Consumer::Resource
     end
 
     def persisted?
-      # attributes.has_key?(primary_key)
       !self.to_param.blank?
     end
 
