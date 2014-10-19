@@ -76,6 +76,8 @@ module JSONAPI::Consumer
           read_attribute(method)
         elsif has_association?(method)
           read_assocation(method)
+        else
+          super
         end
       end
     end

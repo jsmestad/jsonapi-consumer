@@ -13,6 +13,13 @@ RSpec.describe 'Resource' do
     end
   end
 
+  it 'it errors on undefined methods' do
+    obj = test_class.new
+    expect {
+      obj.paper
+    }.to raise_error(NoMethodError)
+  end
+
   describe 'accepts any passed in params through #attributes=' do
     subject(:instance) { test_class.new }
 
