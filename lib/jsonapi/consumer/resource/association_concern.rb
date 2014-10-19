@@ -7,25 +7,42 @@ module JSONAPI::Consumer::Resource
     module ClassMethods
       attr_writer :_associations
 
+      # Defines a has many relationship.
+      #
+      # @example
+      #   class User
+      #     include JSONAPI::Consumer::Resource
+      #     has_many :articles, class_name: 'Article'
+      #   end
       def has_many(*attrs)
         associate(:has_many, attrs)
       end
 
+      # @todo belongs to is not supported yet.
+      #
       def belongs_to(*attrs)
         associate(:belongs_to, attrs)
       end
 
+      # Defines a single relationship.
+      #
+      # @example
+      #   class Article
+      #     include JSONAPI::Consumer::Resource
+      #     has_one :user, class_name: 'User'
+      #   end
       def has_one(*attrs)
         associate(:has_one, attrs)
       end
 
+      # :nodoc:
       def _associations
         @_associations ||= {}
       end
 
+      # :nodoc:
       def associate(type, attrs)
         options = attrs.extract_options!
-
 
         self._associations =  _associations.dup
 
@@ -65,6 +82,7 @@ module JSONAPI::Consumer::Resource
       end
     end
 
+    # :nodoc:
     def each_association(&block)
       self.class._associations.dup.each do |name, options|
         association = self.send(name)
@@ -75,6 +93,9 @@ module JSONAPI::Consumer::Resource
       end
     end
 
+    # Helper method that returns the names of defined associations.
+    #
+    # @return [Array<Symbol>] a list of association names
     def association_names
       self.class._associations.keys
     end
@@ -82,21 +103,37 @@ module JSONAPI::Consumer::Resource
   protected
 
 
+    # Read the specified association.
+    #
+    # @param name [Symbol, String] the association name, `:users` or `:author`
+    #
+    # @return [Array, Object, nil] the value(s) of that association.
     def read_association(name)
       type = _association_type(name)
       _associations.fetch(name, nil)
     end
 
+    # Set values for the key'd association.
+    #
+    # @param key [Symbol] the association name, `:users` or `:author`
+    # @param value the value to set on the specified association
     def set_association(key, value)
       _associations[key.to_sym] = _cast_association(key, value)
     end
 
+
+    # Helper method that verifies a given association exists.
+    #
+    # @param attr_name [String, Symbol] the association name
+    #
+    # @return [true, false]
     def has_association?(attr_name)
       _associations.has_key?(attr_name.to_sym)
     end
 
   private
 
+    # :nodoc:
     def _cast_association(name, value)
       return if value.is_a?(Array) && _association_type(name) != :has_many
       return value if value.nil?
@@ -117,14 +154,17 @@ module JSONAPI::Consumer::Resource
       end
     end
 
+    # :nodoc:
     def _association_for(name)
       self.class._associations[name.to_sym]
     end
 
+    # :nodoc:
     def _association_type(name)
       _association_for(name).fetch(:type)
     end
 
+    # :nodoc:
     def _association_class_name(name)
       if opts = _association_for(name).fetch(:options)
         begin
@@ -139,6 +179,7 @@ module JSONAPI::Consumer::Resource
       end
     end
 
+    # :nodoc:
     def _associations
       @associations ||= {}
     end
