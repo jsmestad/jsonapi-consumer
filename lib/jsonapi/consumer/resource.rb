@@ -53,6 +53,10 @@ module JSONAPI::Consumer
       super()
     end
 
+    def to_key
+      to_param
+    end
+
   private
 
     def read_attribute_for_validation(attr)
