@@ -60,7 +60,6 @@ module JSONAPI::Consumer
     def build
       _body.fetch(klass.json_key, []).collect do |attrs|
         attrs_hash = attributes(attrs).merge(associations(attrs))
-        # require 'pry'; binding.pry
         klass.new(attrs_hash)
       end
     end
