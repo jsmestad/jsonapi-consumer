@@ -6,10 +6,7 @@ module JSONAPI::Consumer
       extend ActiveModel::Naming
 
       attr_reader :errors
-
-      class << self
-        attr_writer :host
-      end
+      class_attribute :host
     end
 
     include AttributesConcern

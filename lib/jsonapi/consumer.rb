@@ -21,6 +21,8 @@ require "jsonapi/consumer/middleware/parse_json"
 require "jsonapi/consumer/middleware/raise_error"
 require "jsonapi/consumer/middleware/request_timeout"
 
+require "jsonapi/consumer/parser"
+
 require "jsonapi/consumer/query"
 require "jsonapi/consumer/query/base"
 require "jsonapi/consumer/query/create"

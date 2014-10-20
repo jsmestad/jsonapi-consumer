@@ -3,19 +3,28 @@ module JSONAPI::Consumer
     extend ActiveSupport::Concern
 
     module ClassMethods
+      def parser_class
+        @parser ||= Parser
+      end
+
       def parse(response)
+        parser = parser_class.new(self, response)
+
         if response.status && response.status == 204
           true
         else
-          data = response.body
-          result_data = data.fetch(json_key, [])
-          d = result_data.map do |attrs|
-            attrs = attrs.dup
-            if attrs.has_key?(:links)
-              attrs.merge!(attrs.delete(:links))
-            end
-            new(attrs)
-          end
+
+          parser.build
+          # data = response.body
+
+          # result_data = data.fetch(json_key, [])
+          # d = result_data.map do |attrs|
+            # attrs = attrs.dup
+            # if attrs.has_key?(:links)
+              # attrs.merge!(attrs.delete(:links))
+            # end
+            # new(attrs)
+          # end
         end
       end
 
@@ -30,7 +39,6 @@ module JSONAPI::Consumer
           Faraday.new(url: self.host, ssl: self.ssl) do |conn|
             conn.request :json
 
-            # conn.response :logger
             conn.use Middleware::RequestTimeout
             conn.use Middleware::ParseJson
 
