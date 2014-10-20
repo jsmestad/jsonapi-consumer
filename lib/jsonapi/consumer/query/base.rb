@@ -3,7 +3,6 @@ module JSONAPI::Consumer::Query
     class << self
       attr_accessor :request_method
     end
-    # attr_reader :klass, :headers, :path, :params
     attr_reader :klass, :headers, :path, :params
 
     def initialize(klass, payload)

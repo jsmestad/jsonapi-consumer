@@ -9,6 +9,7 @@ module JSONAPI::Consumer
       class_attribute :host
     end
 
+    include ObjectBuildConcern
     include AttributesConcern
     include AssociationConcern
     include FindersConcern
@@ -53,8 +54,13 @@ module JSONAPI::Consumer
       super()
     end
 
+    # Returns an Enumerable of all key attributes if any is set, regardless
+    # if the object is persisted or not.
+    # Returns nil if there are no key attributes.
+    #
+    # (see ActiveModel::Conversion#to_key)
     def to_key
-      to_param
+      to_param ? [to_param] : nil
     end
 
   private

@@ -9,6 +9,10 @@ class BasicResource < Base
 
 end
 
+class BuildRequest < Base
+  self.request_new_object_on_build = true
+end
+
 
 # BEGIN - Blog example
 module Blog
