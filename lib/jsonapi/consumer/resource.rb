@@ -45,7 +45,7 @@ module JSONAPI::Consumer
 
     def initialize(params={})
       params.slice(*association_names).each do |key, value|
-        set_association(key, value)
+        send(:"#{key}=", value)
       end
 
       self.attributes = params.except(*association_names) if params

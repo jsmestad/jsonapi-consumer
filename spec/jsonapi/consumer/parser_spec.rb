@@ -20,7 +20,7 @@ RSpec.describe 'Response Parsing' do
           comments: [
             {
               id: '27fcf6e8-24b0-41db-94b1-812046a10f54',
-              content: "i found this useful."
+              content: "i found this useful too."
             }
           ]
         }.to_json)
@@ -34,5 +34,8 @@ RSpec.describe 'Response Parsing' do
     last = results.last
     expect(result.comments.size).to eql(2)
 
+    expect(last.comments.first).to be_a(Blog::Comment)
+    expect(last.comments.first.id).to eql("9c9ba83b-024c-4d4c-9573-9fd41b95fc14")
+    expect(last.comments.first.content).to eql("i found this useful.")
   end
 end

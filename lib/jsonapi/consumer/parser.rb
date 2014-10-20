@@ -20,6 +20,7 @@ module JSONAPI::Consumer
                                      find_linked(assoc_name, ids)
                                    end
       end
+      associations
     end
 
     def fetch_resource
@@ -39,7 +40,9 @@ module JSONAPI::Consumer
     end
 
     def find_linked(assoc_name, id)
-      unless found = linked.fetch(assoc_name, []).detect {|h| h.fetch(:id) == id }
+      if found = linked.fetch(assoc_name, []).detect {|h| h.fetch(:id) == id }
+        klass._association_class_name(assoc_name).new(found)
+      else
         fetch_linked(assoc_name, id)
       end
     end
@@ -57,6 +60,7 @@ module JSONAPI::Consumer
     def build
       _body.fetch(klass.json_key, []).collect do |attrs|
         attrs_hash = attributes(attrs).merge(associations(attrs))
+        # require 'pry'; binding.pry
         klass.new(attrs_hash)
       end
     end
