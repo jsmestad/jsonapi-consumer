@@ -66,7 +66,7 @@ module JSONAPI::Consumer
     end
 
     def _body
-      response.body
+      response.body.with_indifferent_access
     end
 
     def _status

@@ -13,18 +13,7 @@ module JSONAPI::Consumer
         if response.status && response.status == 204
           true
         else
-
           parser.build
-          # data = response.body
-
-          # result_data = data.fetch(json_key, [])
-          # d = result_data.map do |attrs|
-            # attrs = attrs.dup
-            # if attrs.has_key?(:links)
-              # attrs.merge!(attrs.delete(:links))
-            # end
-            # new(attrs)
-          # end
         end
       end
 
