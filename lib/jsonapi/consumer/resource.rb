@@ -6,10 +6,7 @@ module JSONAPI::Consumer
       extend ActiveModel::Naming
 
       attr_reader :errors
-
-      class << self
-        attr_writer :host
-      end
+      class_attribute :host
     end
 
     include AttributesConcern
@@ -48,7 +45,7 @@ module JSONAPI::Consumer
 
     def initialize(params={})
       params.slice(*association_names).each do |key, value|
-        set_association(key, value)
+        send(:"#{key}=", value)
       end
 
       self.attributes = params.except(*association_names) if params

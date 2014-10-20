@@ -41,6 +41,31 @@ module JSONAPI::Consumer::Resource
       end
 
       # :nodoc:
+      def _association_for(name)
+        _associations[name.to_sym]
+      end
+
+      # :nodoc:
+      def _association_type(name)
+        _association_for(name).fetch(:type)
+      end
+
+      # :nodoc:
+      def _association_class_name(name)
+        if class_name = _association_for(name).fetch(:class_name)
+          begin
+            class_name.constantize
+          rescue NameError
+            raise MisconfiguredAssociation,
+              "#{self}##{_association_type(name)} #{name} has a class_name specified that does not exist."
+          end
+        else
+          raise MisconfiguredAssociation,
+            "#{self}##{_association_type(name)} #{name} is missing an explicit `:class_name` value."
+        end
+      end
+
+      # :nodoc:
       def associate(type, attrs)
         options = attrs.extract_options!
 
@@ -77,7 +102,7 @@ module JSONAPI::Consumer::Resource
             end
           end
 
-          self._associations[attr] = {type: type, options: options}
+          self._associations[attr] = {type: type, class_name: options.delete(:class_name), options: options}
         end
       end
     end
@@ -156,27 +181,17 @@ module JSONAPI::Consumer::Resource
 
     # :nodoc:
     def _association_for(name)
-      self.class._associations[name.to_sym]
+      self.class._association_for(name)
     end
 
     # :nodoc:
     def _association_type(name)
-      _association_for(name).fetch(:type)
+      self.class._association_type(name)
     end
 
     # :nodoc:
     def _association_class_name(name)
-      if opts = _association_for(name).fetch(:options)
-        begin
-          opts[:class_name].constantize
-        rescue NameError
-          raise MisconfiguredAssociation,
-            "#{self.class}##{_association_type(name)} #{name} has a class_name specified that does not exist."
-        end
-      else
-        raise MisconfiguredAssociation,
-          "#{self.class}##{_association_type(name)} #{name} is missing an explicit `:class_name` value."
-      end
+      self.class._association_class_name(name)
     end
 
     # :nodoc:

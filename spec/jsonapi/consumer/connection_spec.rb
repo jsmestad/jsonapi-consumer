@@ -99,3 +99,9 @@ RSpec.describe 'Connection' do
   end
 end
 
+RSpec.describe 'Association', 'side-loading' do
+  let(:response) do
+  end
+
+end
+
