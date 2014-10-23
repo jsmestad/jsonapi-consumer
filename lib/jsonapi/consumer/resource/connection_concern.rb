@@ -83,9 +83,9 @@ module JSONAPI::Consumer
     # :nodoc:
     def process_error(err)
       field = err.fetch('path', '')
-      attr = field.match(/\A\/\/(\w+)\z/)[1]
-      if attr && has_attribute?(attr)
-        self.errors.add(attr.to_sym, err.fetch('detail', ''))
+      attr = field.match(/\A\/(\w+)\z/)
+      if attr[1] && has_attribute?(attr[1])
+        self.errors.add(attr[1].to_sym, err.fetch('detail', ''))
       else
         self.errors.add(:base, err.fetch('detail', ''))
       end

@@ -15,8 +15,8 @@ RSpec.describe 'Error handling' do
       stub_request(:post, "http://localhost:3000/api/records")
         .to_return(headers: {content_type: "application/json"}, status: 400, body: {
           errors: [
-            {title: 'cannot be blank', path: "//name", detail: 'name cannot be blank'},
-            {title: 'is invalid', path: '//type', detail: 'type is invalid'}
+            {title: 'cannot be blank', path: "/name", detail: 'name cannot be blank'},
+            {title: 'is invalid', path: '/type', detail: 'type is invalid'}
           ]
         }.to_json)
 

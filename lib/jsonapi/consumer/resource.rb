@@ -45,7 +45,7 @@ module JSONAPI::Consumer
     end
 
     def initialize(params={})
-      params.slice(*association_names).each do |key, value|
+      (params || {}).slice(*association_names).each do |key, value|
         send(:"#{key}=", value)
       end
 
