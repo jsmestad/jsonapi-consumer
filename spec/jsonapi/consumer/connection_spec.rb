@@ -27,6 +27,24 @@ RSpec.describe 'Connection' do
       record = records.first
       expect(record).to be_a(Record)
     end
+
+    it 'accepts additional params' do
+      stub_request(:get, "http://localhost:3000/api/records")
+        .to_return(headers: {content_type: "application/json"}, body: {
+          records: []
+        }.to_json) # This should not get called.
+
+      stub_request(:get, "http://localhost:3000/api/records?name=foo&email=bar@example.com")
+        .to_return(headers: {content_type: "application/json"}, body: {
+          records: [
+            {id: '1', name: 'bar', email: "bar.example"},
+            {id: '2', name: 'foo', email: "bar.example"},
+          ]
+        }.to_json)
+
+      records = test_class.all(name: 'foo', email: 'bar@example.com')
+      expect(records.size).to eql(2)
+    end
   end
 
   describe '.find' do
