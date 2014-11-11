@@ -27,6 +27,7 @@ module JSONAPI::Consumer
         @connection ||= begin
           Faraday.new(url: self.host, ssl: self.ssl) do |conn|
             conn.request :json
+            conn.request :request_headers, accept: "application/json"
 
             conn.use Middleware::RequestTimeout
             conn.use Middleware::ParseJson
