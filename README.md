@@ -22,7 +22,67 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+It's suggested to create a base resource for the whole API that you can re-use.
+
+```ruby
+class Base
+  include JSONAPI::Consumer::Resource
+
+  self.host = 'http://localhost:3000/api/'
+end
+```
+
+Then inherit from that Base class for each resource defined in your API.
+
+```ruby
+module Blog
+
+  class Author < Base
+    has_many :posts, class_name: 'Blog::Post'
+  end
+
+  class Post < Base
+    has_one :user, class_name: 'Blog::User'
+    has_many :comments, class_name: 'Blog::Comment'
+  end
+
+  class User < Base
+
+  end
+
+  class Comment < Base
+
+  end
+
+end
+```
+
+#### Additional Features
+
+##### Dynamic Objects
+
+By default calling `.new` or `.build` on a resource will give you an empty
+object with no attributes defined. This is less than ideal when building forms
+with something like Rails' FormBuilder.
+
+We suggest setting up your model to do a `GET /{resource_name}/new` if your
+server supports it and using `.build` instead of `.new`. This will populate the
+object with defaults set by the server response.
+
+```ruby
+class User
+  include JSONAPI::Consumer::Resource
+
+  self.request_new_object_on_build = true
+
+  # .build will now call GET /users/new
+end
+```
+
+#### Testing
+
+We suggest [Webmock](https://github.com/bblimke/webmock) at this stage in
+development. We plan to add test helpers before the first major release.
 
 ## Contributing
 
