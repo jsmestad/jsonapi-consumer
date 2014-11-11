@@ -25,15 +25,13 @@ RSpec.describe 'Response Parsing' do
           ]
         }.to_json)
 
-    # puts results.inspect
     expect(results.size).to eql(2)
 
     result = results.first
     expect(result.comments.size).to eql(2)
+    expect(result.user).to be_a(Blog::User)
 
     last = results.last
-    expect(result.comments.size).to eql(2)
-
     expect(last.comments.first).to be_a(Blog::Comment)
     expect(last.comments.first.id).to eql("9c9ba83b-024c-4d4c-9573-9fd41b95fc14")
     expect(last.comments.first.content).to eql("i found this useful.")
