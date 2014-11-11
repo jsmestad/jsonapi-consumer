@@ -21,8 +21,12 @@ module Blog
   end
 
   class Post < Base
-    has_one :author, class_name: 'Blog::Author'
+    has_one :user, class_name: 'Blog::User'
     has_many :comments, class_name: 'Blog::Comment'
+  end
+
+  class User < Base
+
   end
 
   class Comment < Base

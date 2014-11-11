@@ -40,7 +40,7 @@ module JSONAPI::Consumer
     end
 
     def find_linked(assoc_name, id)
-      if found = linked.fetch(assoc_name, []).detect {|h| h.fetch(:id) == id }
+      if found = linked.fetch(assoc_name.pluralize, []).detect {|h| h.fetch(:id) == id }
         klass._association_class_name(assoc_name).new(found)
       else
         fetch_linked(assoc_name, id)
