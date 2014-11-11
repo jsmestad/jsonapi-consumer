@@ -1,4 +1,9 @@
 
+0.1.0.pre.3 / 2014-11-11
+==================
+
+  * Has One relationships use plural names in side-loading lookups.
+
 0.1.0.pre.2 / 2014-11-11
 ==================
 
