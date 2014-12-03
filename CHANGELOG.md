@@ -1,4 +1,11 @@
 
+0.1.0 / 2014-12-03
+==================
+
+  * `middleware` and `ssl` attributes are inheritable
+  * Support custom faraday connection middleware with `#middleware` block
+  * update README with usage
+
 0.1.0.pre.3 / 2014-11-11
 ==================
 
