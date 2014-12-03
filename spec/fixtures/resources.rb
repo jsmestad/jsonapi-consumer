@@ -35,3 +35,11 @@ module Blog
   end
 end
 # END - Blog example
+
+
+class NotCalled < Faraday::Response::Middleware
+  class ::NotCalledError < StandardError; end
+  def parse(body)
+    raise NotCalledError, "this should not be called"
+  end
+end
