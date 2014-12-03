@@ -23,8 +23,9 @@ module JSONAPI::Consumer
       end
 
       # :nodoc:
-      def _connection
-        @connection ||= begin
+      def _connection(reload=false)
+        self.connection = nil if !!reload
+        self.connection ||= begin
           Faraday.new(url: self.host, ssl: self.ssl) do |conn|
             conn.request :json
             conn.request :request_headers, accept: "application/json"
@@ -37,6 +38,7 @@ module JSONAPI::Consumer
             conn.use Middleware::RaiseError
             conn.adapter Faraday.default_adapter
           end
+
         end
       end
     end

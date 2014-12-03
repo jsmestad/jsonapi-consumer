@@ -6,7 +6,7 @@ module JSONAPI::Consumer
       extend ActiveModel::Naming
 
       attr_reader :errors
-      class_attribute :host
+      class_attribute :host, :connection, :ssl
     end
 
     include ObjectBuildConcern
@@ -18,8 +18,7 @@ module JSONAPI::Consumer
 
     module ClassMethods
       def middleware(&block)
-        @connection = nil
-        _connection(&block)
+        _connection(true, &block)
       end
 
       def json_key
