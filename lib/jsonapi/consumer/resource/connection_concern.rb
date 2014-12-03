@@ -29,6 +29,8 @@ module JSONAPI::Consumer
             conn.request :json
             conn.request :request_headers, accept: "application/json"
 
+            yield(conn) if block_given?
+
             conn.use Middleware::RequestTimeout
             conn.use Middleware::ParseJson
 

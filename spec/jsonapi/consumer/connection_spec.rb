@@ -10,6 +10,27 @@ RSpec.describe 'Connection' do
 
   let(:obj) { test_class.new(name: 'jsonapi.example') }
 
+  describe 'custom connection middleware' do
+
+    it 'handles custom middleware' do
+      stub_request(:get, "http://localhost:3000/api/basic_resources")
+        .with(headers: {accept: 'application/json'})
+        .to_return(headers: {content_type: "application/json"}, body: {
+          basic_resources: [
+            {id: '1'}
+          ]
+        }.to_json)
+
+      expect { BasicResource.all }.to_not raise_error
+
+      BasicResource.middleware do |conn|
+        conn.use NotCalled
+      end
+
+      expect { BasicResource.all }.to raise_error(NotCalledError)
+    end
+  end
+
   describe '.all' do
     it 'returns all results as objects' do
       stub_request(:get, "http://localhost:3000/api/records")

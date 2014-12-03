@@ -17,6 +17,11 @@ module JSONAPI::Consumer
     include ConnectionConcern
 
     module ClassMethods
+      def middleware(&block)
+        @connection = nil
+        _connection(&block)
+      end
+
       def json_key
         self.name.demodulize.pluralize.underscore
       end
