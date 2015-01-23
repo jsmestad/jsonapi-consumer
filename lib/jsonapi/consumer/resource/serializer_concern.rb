@@ -7,15 +7,13 @@ module JSONAPI::Consumer::Resource
 
       self.each_association do |name, association, options|
         @hash[:links] ||= {}
-        # unless options[:embed] == :ids
-          # @hash[:linked] ||= {}
-        # end
 
         if association.respond_to?(:each)
           add_links(name, association, options)
         else
           add_link(name, association, options)
         end
+        @hash.delete(:links) if @hash[:links].length == 0 && !persisted?
       end
 
       @hash
@@ -31,11 +29,6 @@ module JSONAPI::Consumer::Resource
           obj.to_param
         end
       end
-
-      # unless options[:embed] == :ids
-        # @hash[:linked][name] ||= []
-        # @hash[:linked][name] += association.map { |item| item.attributes(options) }
-      # end
     end
 
     def add_link(name, association, options)
@@ -47,18 +40,10 @@ module JSONAPI::Consumer::Resource
                             else
                               association.to_param
                             end
-
-      # unless options[:embed] == :ids
-        # plural_name = name.to_s.pluralize.to_sym
-
-        # @hash[:linked][plural_name] ||= []
-        # @hash[:linked][plural_name].push association.attributes(options)
-      # end
     end
 
     def to_json(options={})
       serializable_hash(options).to_json
     end
-
   end
 end
