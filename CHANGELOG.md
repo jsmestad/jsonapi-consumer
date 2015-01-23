@@ -1,4 +1,10 @@
 
+0.1.1 / 2015-01-23
+==================
+
+  * Add internal helper #remove_links? for association payloads
+  * Do not send `links: {}` if new object, and empty associations
+
 0.1.0 / 2014-12-03
 ==================
 

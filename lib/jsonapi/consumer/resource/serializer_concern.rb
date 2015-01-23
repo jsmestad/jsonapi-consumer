@@ -7,15 +7,13 @@ module JSONAPI::Consumer::Resource
 
       self.each_association do |name, association, options|
         @hash[:links] ||= {}
-        # unless options[:embed] == :ids
-          # @hash[:linked] ||= {}
-        # end
 
-        if association.respond_to?(:each)
+        if association.respond_to?(:each) or _association_type(name) == :has_many
           add_links(name, association, options)
         else
           add_link(name, association, options)
         end
+        @hash.delete(:links) if remove_links?
       end
 
       @hash
@@ -23,7 +21,7 @@ module JSONAPI::Consumer::Resource
 
     def add_links(name, association, options)
       @hash[:links][name] ||= []
-      @hash[:links][name] += association.map do |obj|
+      @hash[:links][name] += (association || []).map do |obj|
         case obj.class
         when String, Integer
           obj
@@ -31,11 +29,6 @@ module JSONAPI::Consumer::Resource
           obj.to_param
         end
       end
-
-      # unless options[:embed] == :ids
-        # @hash[:linked][name] ||= []
-        # @hash[:linked][name] += association.map { |item| item.attributes(options) }
-      # end
     end
 
     def add_link(name, association, options)
@@ -47,18 +40,24 @@ module JSONAPI::Consumer::Resource
                             else
                               association.to_param
                             end
-
-      # unless options[:embed] == :ids
-        # plural_name = name.to_s.pluralize.to_sym
-
-        # @hash[:linked][plural_name] ||= []
-        # @hash[:linked][plural_name].push association.attributes(options)
-      # end
     end
 
     def to_json(options={})
       serializable_hash(options).to_json
     end
 
+  private
+
+    def remove_links?
+      if persisted?
+        false
+      else # not persisted, new object
+        if @hash[:links].length == 0 or @hash[:links].values.flatten.empty?
+          true
+        else
+          false
+        end
+      end
+    end
   end
 end

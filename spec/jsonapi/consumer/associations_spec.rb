@@ -48,8 +48,33 @@ RSpec.describe 'Associations', 'has_many' do
   describe 'the links payload' do
     subject(:payload_hash) { user_instance.serializable_hash }
 
-    it 'has links in output' do
-      expect(payload_hash).to have_key(:links)
+    describe 'when populated' do
+      before do
+        user_instance.posts = ['1']
+      end
+
+      it 'has links in output, if present' do
+        expect(payload_hash).to have_key(:links)
+        expect(payload_hash[:links]).to eql({posts: ['1']})
+        expect(payload_hash[:links][:posts]).to eql(["1"])
+      end
+    end
+
+    describe 'when empty' do
+      it 'has no links in output' do
+        expect(payload_hash).to_not have_key(:links)
+      end
+    end
+
+    describe 'when persisted and empty' do
+      before do
+        allow(user_instance).to receive(:persisted?).and_return(true)
+      end
+
+      it 'has a links hash in the output' do
+        expect(payload_hash).to have_key(:links)
+        expect(payload_hash[:links]).to eql({posts: []})
+      end
     end
   end
 end
