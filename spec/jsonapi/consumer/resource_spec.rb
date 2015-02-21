@@ -47,6 +47,8 @@ RSpec.describe 'Resource' do
       expect(obj_hash).to have_key(:id)
       expect(obj_hash).to have_key(:name)
       expect(obj_hash).to have_key(:content)
+      expect(obj_hash).to have_key(:type)
+      expect(obj_hash[:type]).to eq :papers
     end
   end
 
@@ -55,7 +57,8 @@ RSpec.describe 'Resource' do
 
     it 'has all attributes root key' do
       json_hash = JSON.parse(obj_hash)
-      expect(json_hash.keys).to eql(['id', 'name', 'content'])
+      expect(json_hash.keys).to eql(['id', 'name', 'content', 'type'])
+      expect(json_hash['type']).to eq 'papers'
     end
   end
 

@@ -7,8 +7,9 @@ RSpec.describe 'Response Parsing' do
   it 'can handle linked associations' do
     stub_request(:get, 'http://localhost:3000/api/comments/9c9ba83b-024c-4d4c-9573-9fd41b95fc14')
       .to_return(headers: {content_type: "application/json"}, body: {
-          comments: [
+          data: [
             {
+              type: :comments,
               id: '9c9ba83b-024c-4d4c-9573-9fd41b95fc14',
               content: "i found this useful."
             }
@@ -17,8 +18,9 @@ RSpec.describe 'Response Parsing' do
 
     stub_request(:get, 'http://localhost:3000/api/comments/27fcf6e8-24b0-41db-94b1-812046a10f54')
       .to_return(headers: {content_type: "application/json"}, body: {
-          comments: [
+          data: [
             {
+              type: :comments,
               id: '27fcf6e8-24b0-41db-94b1-812046a10f54',
               content: "i found this useful too."
             }

@@ -4,6 +4,7 @@ module JSONAPI::Consumer::Resource
 
     def serializable_hash(options={})
       @hash = persisted? ? attributes : attributes.except(self.class.primary_key)
+      @hash[:type] = self.class.resource_name.to_sym
 
       self.each_association do |name, association, options|
         @hash[:links] ||= {}
