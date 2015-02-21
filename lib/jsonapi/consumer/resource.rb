@@ -25,12 +25,16 @@ module JSONAPI::Consumer
         'data'
       end
 
+      def resource_name
+        self.name.demodulize.pluralize.underscore
+      end
+
       def host
         @host || raise(NotImplementedError, 'host was not set')
       end
 
       def path
-        self.name.demodulize.pluralize.underscore
+        resource_name
       end
 
       def ssl
