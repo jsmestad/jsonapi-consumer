@@ -8,7 +8,7 @@ RSpec.describe 'Connection' do
     end
   end
 
-  let(:obj) { test_class.new(name: 'jsonapi.example') }
+  let(:obj) { test_class.new(name: 'jsonapi.example', id: 'client_provided_id') }
 
   describe 'custom connection middleware' do
 

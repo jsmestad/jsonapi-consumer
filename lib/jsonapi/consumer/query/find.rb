@@ -12,5 +12,9 @@ module JSONAPI::Consumer::Query
                   {klass.primary_key => args}
                 end
     end
+
+    def persisted?
+      true
+    end
   end
 end

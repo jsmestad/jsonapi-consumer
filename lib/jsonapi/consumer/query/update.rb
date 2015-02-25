@@ -6,6 +6,10 @@ module JSONAPI::Consumer::Query
       args = args.dup
       @params = {klass.json_key => args.except(klass.primary_key)}
     end
+
+    def persisted?
+      true
+    end
   end
 end
 
