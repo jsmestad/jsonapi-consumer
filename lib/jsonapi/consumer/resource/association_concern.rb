@@ -5,7 +5,7 @@ module JSONAPI::Consumer::Resource
     extend ActiveSupport::Concern
 
     module ClassMethods
-      attr_writer :_associations
+      attr_writer :_association_options
 
       # Defines a has many relationship.
       #
@@ -36,35 +36,48 @@ module JSONAPI::Consumer::Resource
       end
 
       # :nodoc:
-      def _associations
+      def _association_options
         @_associations ||= {}
       end
 
       # :nodoc:
-      def _association_for(name)
-        _associations[name.to_sym]
+      def _association_class(name)
+        options = _association_options[name.to_sym]
+        if options[:class_name]
+          begin
+            options[:class_name].constantize
+          rescue NameError
+            raise MisconfiguredAssociation,
+                  "#{self}##{options[:type]} #{name} has a class_name specified that does not exist."
+          end
+        else
+          raise MisconfiguredAssociation,
+                "#{self}##{options[:type]} #{name} is missing an explicit `:class_name` value."
+        end
       end
 
       # :nodoc:
       def associate(type, attrs)
-        options = attrs.extract_options!
+        options = attrs.extract_options!.merge(type: type)
 
-        self._associations =  _associations.dup
+        self._association_options =  _association_options.dup
 
         attrs.each do |attr|
-          association_object = (type == :has_many) ?
-              ::JSONAPI::Consumer::Association::HasMany.new(self, options.merge({type: type, attribute_name: attr})) :
-              ::JSONAPI::Consumer::Association::Base.new(self, options.merge({type: type, attribute_name: attr}))
-          self._associations[attr] = association_object
+          association_class = (type == :has_many) ?
+              ::JSONAPI::Consumer::Association::HasMany :
+              ::JSONAPI::Consumer::Association::Base
+          association_class::ResourceMethods.attach(self, association_class, options.merge(attribute_name: attr))
+          self._association_options[attr] = options
         end
+
       end
     end
 
     # :nodoc:
     def each_association(&block)
-      self.class._associations.dup.each do |name, association|
+      self.class._association_options.dup.each do |name, options|
         if block_given?
-          block.call(name, association.read(self), association.options)
+          block.call(name, self.send(name), options)
         end
       end
     end
@@ -73,7 +86,7 @@ module JSONAPI::Consumer::Resource
     #
     # @return [Array<Symbol>] a list of association names
     def association_names
-      self.class._associations.keys
+      self.class._association_options.keys
     end
 
   protected
@@ -84,35 +97,7 @@ module JSONAPI::Consumer::Resource
     #
     # @return [true, false]
     def has_association?(attr_name)
-      self.class._associations.has_key?(attr_name.to_sym)
-    end
-
-  private
-
-    # :nodoc:
-    def _cast_association(name, value)
-      return if value.is_a?(Array) && _association_type(name) != :has_many
-      return value if value.nil?
-
-      association_class = _association_class_name(name)
-
-      case value
-      when association_class
-        value
-      when Array
-        value.collect {|i| _cast_association(name, i) }
-      when Hash
-        association_class.new(value)
-      when NilClass
-        nil
-      else
-        association_class.new({association_class.primary_key => value})
-      end
-    end
-
-    # :nodoc:
-    def _association_for(name)
-      self.class._association_for(name)
+      association_names.include? attr_name.to_sym
     end
 
   end

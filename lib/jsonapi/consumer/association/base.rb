@@ -1,20 +1,19 @@
 module JSONAPI::Consumer::Association
   class Base
-    attr_accessor :attribute_name, :options, :resource_class
+    attr_accessor :attribute_name, :options, :resource
 
-    def initialize(resource_class, options)
-      self.resource_class = resource_class
+    def initialize(resource, options)
+      self.resource = resource
       self.options = options
       self.attribute_name = options[:attribute_name]
-      self.class::ResourceMethods.attach(resource_class, self)
     end
 
-    def read(resource_instance)
-      resource_instance._association_data[attribute_name]
+    def read
+      @value
     end
 
-    def write(resource_instance, val)
-      resource_instance._association_data[attribute_name] = cast(val)
+    def write(val)
+      @value = cast(val)
     end
 
     def cast(value)
@@ -38,38 +37,30 @@ module JSONAPI::Consumer::Association
     end
 
     def _association_class
-      if @options[:class_name]
-        begin
-          @options[:class_name].constantize
-        rescue NameError
-          raise MisconfiguredAssociation,
-                "#{self}##{self.options[:type]} #{attribute_name} has a class_name specified that does not exist."
-        end
-      else
-        raise MisconfiguredAssociation,
-              "#{self}##{self.options[:type]} #{attribute_name} is missing an explicit `:class_name` value."
-      end
+      self.resource.class._association_class(self.attribute_name)
     end
 
     module ResourceMethods
-      def self.attach(resource_class, association)
+      def self.attach(resource_class, association_class, options)
 
-        define_method association.attribute_name do
-          association.read(self)
+        attribute_name = options[:attribute_name]
+        define_method attribute_name do
+          send("#{attribute_name}_association").read
         end
 
-        define_method :"#{association.attribute_name.to_s.singularize}_id" do
-          if obj = association.read(self)
+        define_method :"#{attribute_name.to_s.singularize}_id" do
+          if obj = send("#{attribute_name}_association").read
             obj.send(obj.primary_key)
           end
         end
 
-        define_method :"#{association.attribute_name}=" do |val|
-          association.write(self, val)
+        define_method :"#{attribute_name}=" do |val|
+          send("#{attribute_name}_association").write(val)
         end
 
-         define_method :_association_data do
-          @_association_data ||= {}
+        define_method :"#{attribute_name}_association" do
+          @_associations ||= {}
+          @_associations[attribute_name] ||= association_class.new(self, options)
         end
 
         resource_class.include self

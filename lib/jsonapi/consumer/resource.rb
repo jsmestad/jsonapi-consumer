@@ -81,8 +81,6 @@ module JSONAPI::Consumer
           set_attribute($1, args.first)
         elsif has_attribute?(method)
           read_attribute(method)
-        elsif has_association?(method)
-          read_assocation(method)
         else
           super
         end
