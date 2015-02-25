@@ -43,6 +43,12 @@ RSpec.describe 'Associations', 'has_many' do
         user_instance.posts = nil
       }.to change{user_instance.post_ids}.from(['1']).to(nil)
     end
+
+    it 'can be pushed on' do
+      expect {
+        user_instance.posts << '1'
+      }.to change{user_instance.post_ids}.from(nil).to(['1'])
+    end
   end
 
   describe 'the links payload' do

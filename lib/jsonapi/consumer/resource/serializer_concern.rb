@@ -8,7 +8,7 @@ module JSONAPI::Consumer::Resource
       self.each_association do |name, association, options|
         @hash[:links] ||= {}
 
-        if association.respond_to?(:each) or _association_type(name) == :has_many
+        if association.respond_to?(:each) or options[:type] == :has_many
           add_links(name, association, options)
         else
           add_link(name, association, options)
