@@ -124,6 +124,7 @@ RSpec.describe 'Connection' do
         }.to_json)
 
       obj.id = '1'
+      obj.instance_variable_set(:@new_record, false)
       obj.updated_at = "2014-10-18T18:59:40Z"
       expect(obj.updated_at).to eql("2014-10-18T18:59:40Z")
 
