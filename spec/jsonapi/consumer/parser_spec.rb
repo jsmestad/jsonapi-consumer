@@ -25,30 +25,6 @@ RSpec.describe 'Response Parsing' do
     let(:response) { OpenStruct.new(body: Responses::Beta.sideload) }
     let(:parser) { JSONAPI::Consumer::Parsers::Beta.new(Blog::Post, response) }
 
-    before do
-      # stub_request(:get, 'http://localhost:3000/api/comments/9c9ba83b-024c-4d4c-9573-9fd41b95fc14')
-        # .to_return(headers: {content_type: "application/json"}, body: {
-          # data: [
-            # {
-              # id: '9c9ba83b-024c-4d4c-9573-9fd41b95fc14',
-              # type: 'comments',
-              # content: "i found this useful."
-            # }
-          # ]
-        # }.to_json)
-
-      # stub_request(:get, 'http://localhost:3000/api/comments/27fcf6e8-24b0-41db-94b1-812046a10f54')
-        # .to_return(headers: {content_type: "application/json"}, body: {
-            # data: [
-              # {
-                # id: '27fcf6e8-24b0-41db-94b1-812046a10f54',
-                # type: 'comments',
-                # content: "i found this useful too."
-              # }
-            # ]
-          # }.to_json)
-    end
-
     it_behaves_like 'a valid parser'
   end
 
