@@ -22,7 +22,9 @@ require "jsonapi/consumer/middleware/raise_error"
 require "jsonapi/consumer/middleware/request_headers"
 require "jsonapi/consumer/middleware/request_timeout"
 
-require "jsonapi/consumer/parser"
+require "jsonapi/consumer/parsers"
+require "jsonapi/consumer/parsers/beta"
+require "jsonapi/consumer/parsers/stable"
 
 require "jsonapi/consumer/query"
 require "jsonapi/consumer/query/base"

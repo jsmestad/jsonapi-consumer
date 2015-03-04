@@ -1,5 +1,5 @@
-module JSONAPI::Consumer
-  class Parser
+module JSONAPI::Consumer::Parsers
+  class Stable
     attr_reader :response, :klass
 
     def initialize(klass, response)
