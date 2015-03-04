@@ -31,14 +31,6 @@ module JSONAPI::Consumer::Resource
       attributes.fetch(primary_key, '').to_s
     end
 
-    # def [](key)
-      # read_attribute(key)
-    # end
-
-    # def []=(key, value)
-      # set_attribute(key, value)
-    # end
-
     alias :respond_to_without_attributes? :respond_to?
     def respond_to?(method, include_private_methods=false)
       if super
