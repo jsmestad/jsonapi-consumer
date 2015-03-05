@@ -16,8 +16,8 @@ RSpec.describe 'Connection' do
       stub_request(:get, "http://localhost:3000/api/basic_resources")
         .with(headers: {accept: 'application/json'})
         .to_return(headers: {content_type: "application/json"}, body: {
-          basic_resources: [
-            {id: '1'}
+          data: [
+            {type: :basic_resources, id: '1'}
           ]
         }.to_json)
 
@@ -36,10 +36,10 @@ RSpec.describe 'Connection' do
       stub_request(:get, "http://localhost:3000/api/records")
         .with(headers: {accept: 'application/json'})
         .to_return(headers: {content_type: "application/json"}, body: {
-          records: [
-            {id: '1', name: "foo.example"},
-            {id: '2', name: "bar.example"},
-            {id: '3', name: "baz.example"}
+          data: [
+            {type: :records, id: '1', name: "foo.example"},
+            {type: :records, id: '2', name: "bar.example"},
+            {type: :records, id: '3', name: "baz.example"}
           ]
         }.to_json)
 
@@ -54,15 +54,15 @@ RSpec.describe 'Connection' do
       stub_request(:get, "http://localhost:3000/api/records")
         .with(headers: {accept: 'application/json'})
         .to_return(headers: {content_type: "application/json"}, body: {
-          records: []
+          data: []
         }.to_json) # This should not get called.
 
       stub_request(:get, "http://localhost:3000/api/records?name=foo&email=bar@example.com")
         .with(headers: {accept: 'application/json'})
         .to_return(headers: {content_type: "application/json"}, body: {
-          records: [
-            {id: '1', name: 'bar', email: "bar.example"},
-            {id: '2', name: 'foo', email: "bar.example"},
+          data: [
+            {type: :records, id: '1', name: 'bar', email: "bar.example"},
+            {type: :records, id: '2', name: 'foo', email: "bar.example"},
           ]
         }.to_json)
 
@@ -76,8 +76,8 @@ RSpec.describe 'Connection' do
       stub_request(:get, "http://localhost:3000/api/records/1")
         .with(headers: {accept: 'application/json'})
         .to_return(headers: {content_type: "application/json"}, body: {
-          records: [
-            {id: '1', name: "foobar.example"}
+          data: [
+            {type: :records, id: '1', name: "foobar.example"}
           ]
         }.to_json)
 
@@ -96,8 +96,14 @@ RSpec.describe 'Connection' do
       stub_request(:post, "http://localhost:3000/api/records")
         .with(headers: {accept: 'application/json', content_type: "application/json"})
         .to_return(headers: {content_type: "application/json"}, status: 201, body: {
-          records: [
-            {id: '1', name: "foobar.example", created_at: "2014-10-16T18:49:40Z", updated_at: "2014-10-18T18:59:40Z"}
+          data: [
+            {
+              type: :records,
+              id: '1',
+              name: "foobar.example",
+              created_at: "2014-10-16T18:49:40Z",
+              updated_at: "2014-10-18T18:59:40Z"
+            }
           ]
         }.to_json)
 
@@ -118,8 +124,14 @@ RSpec.describe 'Connection' do
       stub_request(:put, "http://localhost:3000/api/records/1")
         .with(headers: {accept: 'application/json', content_type: "application/json"})
         .to_return(headers: {content_type: "application/json"}, body: {
-          records: [
-            {id: '1', name: "foobar.example", created_at: "2014-10-16T18:49:40Z", updated_at: "2016-10-18T18:59:40Z"}
+          data: [
+            {
+              type: :records,
+              id: '1',
+              name: "foobar.example",
+              created_at: "2014-10-16T18:49:40Z",
+              updated_at: "2016-10-18T18:59:40Z"
+            }
           ]
         }.to_json)
 

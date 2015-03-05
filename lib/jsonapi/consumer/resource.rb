@@ -22,6 +22,10 @@ module JSONAPI::Consumer
       end
 
       def json_key
+        'data'
+      end
+
+      def resource_name
         self.name.demodulize.pluralize.underscore
       end
 
@@ -30,7 +34,7 @@ module JSONAPI::Consumer
       end
 
       def path
-        json_key
+        resource_name
       end
 
       def ssl
