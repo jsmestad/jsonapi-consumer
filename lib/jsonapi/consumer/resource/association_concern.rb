@@ -5,7 +5,7 @@ module JSONAPI::Consumer::Resource
     extend ActiveSupport::Concern
 
     module ClassMethods
-      attr_writer :_associations
+      attr_writer :_association_options
 
       # Defines a has many relationship.
       #
@@ -36,84 +36,48 @@ module JSONAPI::Consumer::Resource
       end
 
       # :nodoc:
-      def _associations
+      def _association_options
         @_associations ||= {}
       end
 
       # :nodoc:
-      def _association_for(name)
-        _associations[name.to_sym]
-      end
-
-      # :nodoc:
-      def _association_type(name)
-        _association_for(name).fetch(:type)
-      end
-
-      # :nodoc:
-      def _association_class_name(name)
-        if class_name = _association_for(name).fetch(:class_name)
+      def _association_class(name)
+        options = _association_options[name.to_sym]
+        if options[:class_name]
           begin
-            class_name.constantize
+            options[:class_name].constantize
           rescue NameError
             raise MisconfiguredAssociation,
-              "#{self}##{_association_type(name)} #{name} has a class_name specified that does not exist."
+                  "#{self}##{options[:type]} #{name} has a class_name specified that does not exist."
           end
         else
           raise MisconfiguredAssociation,
-            "#{self}##{_association_type(name)} #{name} is missing an explicit `:class_name` value."
+                "#{self}##{options[:type]} #{name} is missing an explicit `:class_name` value."
         end
       end
 
       # :nodoc:
       def associate(type, attrs)
-        options = attrs.extract_options!
+        options = attrs.extract_options!.merge(type: type)
 
-        self._associations =  _associations.dup
+        self._association_options =  _association_options.dup
 
         attrs.each do |attr|
-          unless method_defined?(attr)
-            define_method attr do
-              read_association(attr)
-            end
-          end
-
-          if type == :has_many
-            unless method_defined?(:"#{attr.to_s.singularize}_ids")
-              define_method :"#{attr.to_s.singularize}_ids" do
-                if objs = read_association(attr)
-                  objs.collect {|o| o.send(o.primary_key)}
-                end
-              end
-            end
-          else
-            unless method_defined?(:"#{attr.to_s.singularize}_id")
-              define_method :"#{attr.to_s.singularize}_id" do
-                if obj = read_association(attr)
-                  obj.send(obj.primary_key)
-                end
-              end
-            end
-          end
-          unless method_defined?(:"#{attr}=")
-            define_method :"#{attr}=" do |val|
-              val = [val].flatten if type == :has_many && !val.nil?
-              set_association(attr, val)
-            end
-          end
-
-          self._associations[attr] = {type: type, class_name: options.delete(:class_name), options: options}
+          association_class = (type == :has_many) ?
+              ::JSONAPI::Consumer::Association::HasMany :
+              ::JSONAPI::Consumer::Association::Base
+          association_class::ResourceMethods.attach(self, association_class, options.merge(attribute_name: attr))
+          self._association_options[attr] = options
         end
+
       end
     end
 
     # :nodoc:
     def each_association(&block)
-      self.class._associations.dup.each do |name, options|
-        association = self.send(name)
-
+      self.class._association_options.dup.each do |name, options|
         if block_given?
-          block.call(name, association, options[:options])
+          block.call(name, self.send(name), options)
         end
       end
     end
@@ -122,30 +86,10 @@ module JSONAPI::Consumer::Resource
     #
     # @return [Array<Symbol>] a list of association names
     def association_names
-      self.class._associations.keys
+      self.class._association_options.keys
     end
 
   protected
-
-
-    # Read the specified association.
-    #
-    # @param name [Symbol, String] the association name, `:users` or `:author`
-    #
-    # @return [Array, Object, nil] the value(s) of that association.
-    def read_association(name)
-      type = _association_type(name)
-      _associations.fetch(name, nil)
-    end
-
-    # Set values for the key'd association.
-    #
-    # @param key [Symbol] the association name, `:users` or `:author`
-    # @param value the value to set on the specified association
-    def set_association(key, value)
-      _associations[key.to_sym] = _cast_association(key, value)
-    end
-
 
     # Helper method that verifies a given association exists.
     #
@@ -153,50 +97,7 @@ module JSONAPI::Consumer::Resource
     #
     # @return [true, false]
     def has_association?(attr_name)
-      _associations.has_key?(attr_name.to_sym)
-    end
-
-  private
-
-    # :nodoc:
-    def _cast_association(name, value)
-      return if value.is_a?(Array) && _association_type(name) != :has_many
-      return value if value.nil?
-
-      association_class = _association_class_name(name)
-
-      case value
-      when association_class
-        value
-      when Array
-        value.collect {|i| _cast_association(name, i) }
-      when Hash
-        association_class.new(value)
-      when NilClass
-        nil
-      else
-        association_class.new({association_class.primary_key => value})
-      end
-    end
-
-    # :nodoc:
-    def _association_for(name)
-      self.class._association_for(name)
-    end
-
-    # :nodoc:
-    def _association_type(name)
-      self.class._association_type(name)
-    end
-
-    # :nodoc:
-    def _association_class_name(name)
-      self.class._association_class_name(name)
-    end
-
-    # :nodoc:
-    def _associations
-      @associations ||= {}
+      association_names.include? attr_name.to_sym
     end
 
   end

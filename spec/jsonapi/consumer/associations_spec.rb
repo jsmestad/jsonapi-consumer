@@ -28,20 +28,26 @@ RSpec.describe 'Associations', 'has_many' do
     it 'can be added as a single value' do
       expect {
         user_instance.posts = '1'
-      }.to change{user_instance.post_ids}.from(nil).to(['1'])
+      }.to change{user_instance.post_ids}.from([]).to(['1'])
     end
 
     it 'can be added as a list of items' do
       expect {
         user_instance.posts = ['1','2','3']
-      }.to change{user_instance.post_ids}.from(nil).to(['1','2','3'])
+      }.to change{user_instance.post_ids}.from([]).to(['1','2','3'])
     end
 
     it 'can be blanked out' do
       user_instance.posts = '1'
       expect {
         user_instance.posts = nil
-      }.to change{user_instance.post_ids}.from(['1']).to(nil)
+      }.to change{user_instance.post_ids}.from(['1']).to([])
+    end
+
+    it 'can be pushed on' do
+      expect {
+        user_instance.posts << Post.new(id: '1')
+      }.to change{user_instance.post_ids}.from([]).to(['1'])
     end
   end
 

@@ -39,3 +39,6 @@ require "jsonapi/consumer/resource/finders_concern"
 require "jsonapi/consumer/resource/object_build_concern"
 require "jsonapi/consumer/resource/serializer_concern"
 require "jsonapi/consumer/resource"
+
+require "jsonapi/consumer/association/base"
+require "jsonapi/consumer/association/has_many"

@@ -27,6 +27,8 @@ RSpec.describe 'Response Parsing' do
 
     expect(results.size).to eql(2)
 
+    expect(Blog::Post._association_options[:user][:class_name]).to eq 'Blog::User'
+    results = parser.build
     result = results.first
     expect(result.comments.size).to eql(2)
     expect(result.user).to be_a(Blog::User)
