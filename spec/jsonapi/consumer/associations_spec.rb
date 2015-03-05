@@ -85,12 +85,12 @@ RSpec.describe 'Associations', 'belongs_to' do
       include JSONAPI::Consumer::Resource
 
       # belongs_to :comment, class_name: 'Comment'
-      belongs_to :user, class_name: 'User'
+      belongs_to :user, class_name: 'UserBT'
     end
   end
 
   let!(:user_class) do
-    User ||= Class.new do
+    UserBT ||= Class.new do
       include JSONAPI::Consumer::Resource
     end
   end
