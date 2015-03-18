@@ -18,7 +18,7 @@ RSpec.describe 'Attributes' do
     end
   end
 
-  describe '#new_record? / #peristed?' do
+  describe '#new_record? / #persisted?' do
     it 'changed only after saving' do
       stub_request(:post, "http://localhost:3000/api/attr_records")
         .with(headers: {accept: 'application/json', content_type: "application/json"})
