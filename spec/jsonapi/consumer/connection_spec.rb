@@ -8,7 +8,7 @@ RSpec.describe 'Connection' do
     end
   end
 
-  let(:obj) { test_class.new(name: 'jsonapi.example') }
+  let(:obj) { test_class.new(name: 'jsonapi.example', id: 'client_provided_id') }
 
   describe 'custom connection middleware' do
 
@@ -123,12 +123,11 @@ RSpec.describe 'Connection' do
           ]
         }.to_json)
 
-      obj.id = '1'
-      obj.updated_at = "2014-10-18T18:59:40Z"
-      expect(obj.updated_at).to eql("2014-10-18T18:59:40Z")
-
-      expect(obj.save).to eql(true)
-      expect(obj.updated_at).to eql("2016-10-18T18:59:40Z")
+      persisted_object = test_class.new({name: 'jsonapi.example', id: '1'}, false)
+      persisted_object.updated_at = "2014-10-18T18:59:40Z"
+      expect(persisted_object.updated_at).to eql("2014-10-18T18:59:40Z")
+      expect(persisted_object.save).to eql(true)
+      expect(persisted_object.updated_at).to eql("2016-10-18T18:59:40Z")
     end
   end
 

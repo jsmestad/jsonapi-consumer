@@ -56,6 +56,7 @@ module JSONAPI::Consumer
 
       if self.errors.empty?
         self.attributes = results.first.attributes
+        @new_record = false
         true
       else
         false

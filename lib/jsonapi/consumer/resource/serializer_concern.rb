@@ -3,7 +3,7 @@ module JSONAPI::Consumer::Resource
     extend ActiveSupport::Concern
 
     def serializable_hash(options={})
-      @hash = persisted? ? attributes : attributes.except(self.class.primary_key)
+      @hash = self.to_param.blank? ? attributes.except(self.class.primary_key) : attributes
 
       self.each_association do |name, association, options|
         @hash[:links] ||= {}

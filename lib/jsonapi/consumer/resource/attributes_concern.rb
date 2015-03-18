@@ -24,7 +24,11 @@ module JSONAPI::Consumer::Resource
     end
 
     def persisted?
-      !self.to_param.blank?
+      !new_record?
+    end
+
+    def new_record?
+      @new_record
     end
 
     def to_param
