@@ -4,7 +4,7 @@ module JSONAPI::Consumer
 
     module ClassMethods
       def parser_class
-        @parser ||= Parsers::Stable
+        @parser ||= Parsers::Beta
       end
 
       def parse(response)

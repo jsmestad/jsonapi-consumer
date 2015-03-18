@@ -23,9 +23,9 @@ RSpec.describe 'Attributes' do
       stub_request(:post, "http://localhost:3000/api/attr_records")
         .with(headers: {accept: 'application/json', content_type: "application/json"})
         .to_return(headers: {content_type: "application/json"}, status: 201, body: {
-          attr_records: [
+          data: [
             {
-              type: :records,
+              type: 'records',
               id: '1',
               name: "foobar.example",
               created_at: "2014-10-16T18:49:40Z",
@@ -38,23 +38,26 @@ RSpec.describe 'Attributes' do
         obj.save
       }.to change{obj.new_record?}.from(true).to(false)
     end
+
     it 'is persisted after loading' do
       stub_request(:get, "http://localhost:3000/api/attr_records/1")
         .with(headers: {accept: 'application/json'})
         .to_return(headers: {content_type: "application/json"}, body: {
-          attr_records: [
-            {type: :records, id: '1', name: "foobar.example"}
+          data: [
+            {type: 'records', id: '1', name: "foobar.example"}
           ]
         }.to_json)
+
       stub_request(:get, "http://localhost:3000/api/attr_records")
         .with(headers: {accept: 'application/json'})
         .to_return(headers: {content_type: "application/json"}, body: {
-          attr_records: [
-            {type: :records, id: '1', name: "foo.example"},
-            {type: :records, id: '2', name: "bar.example"},
-            {type: :records, id: '3', name: "baz.example"}
+          data: [
+            {type: 'records', id: '1', name: "foo.example"},
+            {type: 'records', id: '2', name: "bar.example"},
+            {type: 'records', id: '3', name: "baz.example"}
           ]
         }.to_json)
+
       expect(test_class.all.all?{|record| record.new_record?}).to eq false
       expect(test_class.all.all?{|record| record.persisted?}).to eq true
       expect(test_class.find(1).first.new_record?).to eq false

@@ -45,7 +45,7 @@ module JSONAPI::Consumer::Parsers
 
     def find_linked(assoc_name, id)
       if found = linked.detect {|h| h.fetch(:id) == id and h.fetch(:type) == assoc_name.pluralize }
-        klass._association_class_name(assoc_name).new(found.except(:type, :links))
+        klass._association_class_name(assoc_name).new(found.except(:type, :links), false)
       else
         raise JSONAPI::Consumer::Errors::ResponseError, "Could not find linked resource #{assoc_name.pluralize} matching identifier #{id}"
         # This means its a bad payload
@@ -68,7 +68,7 @@ module JSONAPI::Consumer::Parsers
     def extract
       _body.fetch(:data, []).collect do |attrs|
         attrs_hash = attributes(attrs).merge(associations(attrs))
-        klass.new(attrs_hash)
+        klass.new(attrs_hash, false)
       end
     end
 

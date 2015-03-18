@@ -6,8 +6,8 @@ RSpec.describe 'Object building' do
   it 'returns an object with populated items' do
     stub_request(:get, "http://localhost:3000/api/build_requests/new")
       .to_return(headers: {content_type: "application/json"}, body: {
-          build_requests: [
-            {name: "", title: "default value"}
+        data: [
+            {type: 'build_requests', name: "", title: "default value"}
           ]
         }.to_json)
 
