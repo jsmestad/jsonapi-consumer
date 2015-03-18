@@ -2,23 +2,24 @@
 
 An ActiveModel-compliant consumer framework for communicating with JSONAPI-based APIs.
 
-[![Build Status](https://travis-ci.org/jsmestad/jsonapi-consumer.svg?branch=master)](https://travis-ci.org/jsmestad/jsonapi-consumer)
+[![Build Status](https://travis-ci.org/jsmestad/jsonapi-consumer.svg?branch=develop)](https://travis-ci.org/jsmestad/jsonapi-consumer)
+
+## Note on develop branch
+
+`master` works with previous JSONAPI standards. The `develop` branch supports
+only the latest JSONAPI standard (which is RC3 as of Mar 2015).
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'jsonapi-consumer'
+gem 'jsonapi-consumer', github: 'jsmestad/jsonapi-consumer', branch: 'develop'
 ```
 
 And then execute:
 
     $ bundle
-
-Or install it yourself as:
-
-    $ gem install jsonapi-consumer
 
 ## Usage
 
