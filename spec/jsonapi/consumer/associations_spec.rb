@@ -55,8 +55,8 @@ RSpec.describe 'Associations', 'has_many' do
 
       it 'has links in output, if present' do
         expect(payload_hash).to have_key(:links)
-        expect(payload_hash[:links]).to eql({posts: ['1']})
-        expect(payload_hash[:links][:posts]).to eql(["1"])
+        expect(payload_hash[:links]).to eql({posts: [{type: 'posts', id: '1'}]})
+        expect(payload_hash[:links][:posts]).to eql([{type: 'posts', id: '1'}])
       end
     end
 

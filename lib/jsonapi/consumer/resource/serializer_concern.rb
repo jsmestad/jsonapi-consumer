@@ -26,9 +26,9 @@ module JSONAPI::Consumer::Resource
       @hash[:links][name] += (association || []).map do |obj|
         case obj.class
         when String, Integer
-          obj
+          {id: obj, type: _association_class_name(name).json_key }
         else
-          obj.to_param
+          {id: obj.to_param, type: obj.class.json_key}
         end
       end
     end
@@ -38,9 +38,9 @@ module JSONAPI::Consumer::Resource
 
       @hash[:links][name] = case association.class
                             when String, Integer
-                              association
+                              {id: association, type: _association_class_name(name).json_key }
                             else
-                              association.to_param
+                              {id: association.to_param, type: association.class.json_key }
                             end
     end
 
