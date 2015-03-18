@@ -17,6 +17,7 @@ end
 require "jsonapi/consumer/errors"
 
 require "jsonapi/consumer/middleware"
+require "jsonapi/consumer/middleware/encode_json_api"
 require "jsonapi/consumer/middleware/parse_json"
 require "jsonapi/consumer/middleware/raise_error"
 require "jsonapi/consumer/middleware/request_headers"

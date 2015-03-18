@@ -14,8 +14,8 @@ RSpec.describe 'Connection' do
 
     it 'handles custom middleware' do
       stub_request(:get, "http://localhost:3000/api/basic_resources")
-        .with(headers: {accept: 'application/json'})
-        .to_return(headers: {content_type: "application/json"}, body: {
+        .with(headers: {accept: 'application/vnd.api+json'})
+        .to_return(headers: {content_type: "application/vnd.api+json"}, body: {
           data: [
             {id: '1', type: 'basic_resources'}
           ]
@@ -34,8 +34,8 @@ RSpec.describe 'Connection' do
   describe '.all' do
     it 'returns all results as objects' do
       stub_request(:get, "http://localhost:3000/api/records")
-        .with(headers: {accept: 'application/json'})
-        .to_return(headers: {content_type: "application/json"}, body: {
+        .with(headers: {accept: 'application/vnd.api+json'})
+        .to_return(headers: {content_type: "application/vnd.api+json"}, body: {
           data: [
             {id: '1', type: 'records', name: "foo.example"},
             {id: '2', type: 'records', name: "bar.example"},
@@ -52,14 +52,14 @@ RSpec.describe 'Connection' do
 
     it 'accepts additional params' do
       stub_request(:get, "http://localhost:3000/api/records")
-        .with(headers: {accept: 'application/json'})
-        .to_return(headers: {content_type: "application/json"}, body: {
+        .with(headers: {accept: 'application/vnd.api+json'})
+        .to_return(headers: {content_type: "application/vnd.api+json"}, body: {
           data: []
         }.to_json) # This should not get called.
 
       stub_request(:get, "http://localhost:3000/api/records?name=foo&email=bar@example.com")
-        .with(headers: {accept: 'application/json'})
-        .to_return(headers: {content_type: "application/json"}, body: {
+        .with(headers: {accept: 'application/vnd.api+json'})
+        .to_return(headers: {content_type: "application/vnd.api+json"}, body: {
           data: [
             {id: '1', type: 'records', name: 'bar', email: "bar.example"},
             {id: '2', type: 'records', name: 'foo', email: "bar.example"},
@@ -74,8 +74,8 @@ RSpec.describe 'Connection' do
   describe '.find' do
     it 'returns proper objects' do
       stub_request(:get, "http://localhost:3000/api/records/1")
-        .with(headers: {accept: 'application/json'})
-        .to_return(headers: {content_type: "application/json"}, body: {
+        .with(headers: {accept: 'application/vnd.api+json'})
+        .to_return(headers: {content_type: "application/vnd.api+json"}, body: {
           data: [
             {id: '1', type: 'records', name: "foobar.example"}
           ]
@@ -94,8 +94,8 @@ RSpec.describe 'Connection' do
   describe '#save' do
     it 'can save successfully if called on a new item' do
       stub_request(:post, "http://localhost:3000/api/records")
-        .with(headers: {accept: 'application/json', content_type: "application/json"})
-        .to_return(headers: {content_type: "application/json"}, status: 201, body: {
+        .with(headers: {accept: 'application/vnd.api+json', content_type: "application/vnd.api+json"})
+        .to_return(headers: {content_type: "application/vnd.api+json"}, status: 201, body: {
           data: [
             {type: 'records', id: '1', name: "foobar.example", created_at: "2014-10-16T18:49:40Z", updated_at: "2014-10-18T18:59:40Z"}
           ]
@@ -116,8 +116,8 @@ RSpec.describe 'Connection' do
 
     it 'can update when called on an existing item' do
       stub_request(:put, "http://localhost:3000/api/records/1")
-        .with(headers: {accept: 'application/json', content_type: "application/json"})
-        .to_return(headers: {content_type: "application/json"}, body: {
+        .with(headers: {accept: 'application/vnd.api+json', content_type: "application/vnd.api+json"})
+        .to_return(headers: {content_type: "application/vnd.api+json"}, body: {
           data: [
             {id: '1', type: 'records', name: "foobar.example", created_at: "2014-10-16T18:49:40Z", updated_at: "2016-10-18T18:59:40Z"}
           ]
@@ -136,7 +136,7 @@ RSpec.describe 'Connection' do
 
     it 'returns true when successful' do
       stub_request(:delete, "http://localhost:3000/api/records/1")
-        .with(headers: {accept: "application/json"})
+        .with(headers: {accept: "application/vnd.api+json"})
         .to_return(status: 204, body: nil)
 
       expect(obj.destroy).to eql(true)

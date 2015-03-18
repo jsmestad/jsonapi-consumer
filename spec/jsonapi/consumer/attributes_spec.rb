@@ -21,8 +21,8 @@ RSpec.describe 'Attributes' do
   describe '#new_record? / #persisted?' do
     it 'changed only after saving' do
       stub_request(:post, "http://localhost:3000/api/attr_records")
-        .with(headers: {accept: 'application/json', content_type: "application/json"})
-        .to_return(headers: {content_type: "application/json"}, status: 201, body: {
+        .with(headers: {accept: 'application/vnd.api+json', content_type: "application/vnd.api+json"})
+        .to_return(headers: {content_type: "application/vnd.api+json"}, status: 201, body: {
           data: [
             {
               type: 'records',
@@ -41,16 +41,16 @@ RSpec.describe 'Attributes' do
 
     it 'is persisted after loading' do
       stub_request(:get, "http://localhost:3000/api/attr_records/1")
-        .with(headers: {accept: 'application/json'})
-        .to_return(headers: {content_type: "application/json"}, body: {
+        .with(headers: {accept: 'application/vnd.api+json'})
+        .to_return(headers: {content_type: "application/vnd.api+json"}, body: {
           data: [
             {type: 'records', id: '1', name: "foobar.example"}
           ]
         }.to_json)
 
       stub_request(:get, "http://localhost:3000/api/attr_records")
-        .with(headers: {accept: 'application/json'})
-        .to_return(headers: {content_type: "application/json"}, body: {
+        .with(headers: {accept: 'application/vnd.api+json'})
+        .to_return(headers: {content_type: "application/vnd.api+json"}, body: {
           data: [
             {type: 'records', id: '1', name: "foo.example"},
             {type: 'records', id: '2', name: "bar.example"},

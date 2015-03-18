@@ -27,8 +27,8 @@ module JSONAPI::Consumer
         self.connection = nil if !!reload
         self.connection ||= begin
           Faraday.new(url: self.host, ssl: self.ssl) do |conn|
-            conn.request :json
-            conn.request :request_headers, accept: "application/json"
+            conn.request :json_api
+            conn.request :request_headers, accept: "application/vnd.api+json"
 
             yield(conn) if block_given?
 
