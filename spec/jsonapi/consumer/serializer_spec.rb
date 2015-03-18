@@ -28,14 +28,19 @@ RSpec.describe 'Serializer' do
 
   it 'outputs the associated has_one' do
     expect(obj_hash).to have_key(:links)
-    expect(obj_hash[:links]).to have_key(:owner)
+    expect(obj_hash[:links].keys).to match_array([:owner, :users])
     expect(obj_hash[:links][:owner]).to eql(1)
+  end
+
+  it 'establishes the proper `type` value' do
+    expect(obj_hash).to have_key(:type)
+    expect(obj_hash[:type]).to eql(test_class.json_key)
   end
 
   it 'outputs the associated has_many' do
     expect(obj_hash).to have_key(:links)
-    expect(obj_hash[:links]).to have_key(:users)
-    expect(obj_hash[:links][:users]).to eql(['a', 'b'])
+    expect(obj_hash[:links].keys).to match_array([:users, :owner])
+    expect(obj_hash[:links][:users]).to match_array(['a', 'b'])
   end
 
 end

@@ -55,7 +55,7 @@ RSpec.describe 'Resource' do
 
     it 'has all attributes root key' do
       json_hash = JSON.parse(obj_hash)
-      expect(json_hash.keys).to eql(['id', 'name', 'content'])
+      expect(json_hash.keys).to match_array(['id', 'name', 'content', 'type'])
     end
   end
 

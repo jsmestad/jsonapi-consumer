@@ -5,6 +5,8 @@ module JSONAPI::Consumer::Resource
     def serializable_hash(options={})
       @hash = self.to_param.blank? ? attributes.except(self.class.primary_key) : attributes
 
+      @hash.merge!(type: self.class.json_key)
+
       self.each_association do |name, association, options|
         @hash[:links] ||= {}
 
