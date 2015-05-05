@@ -77,15 +77,22 @@ module Responses
             links: {
               self: "http://localhost:3000/api/posts/e6d1b7ac-80d8-40dd-877d-f5bd40feabfb",
               comments: {
-                type: "comments",
-                id: [
-                  "82083863-bba9-480e-a281-f5d34e7dc0ca",
-                  "3b402e8a-7c35-4915-8c72-07ea7779ab76"
+                linkage: [
+                  {
+                    type: "comments",
+                    id: "82083863-bba9-480e-a281-f5d34e7dc0ca"
+                  },
+                  {
+                    type: "comments",
+                    id: "3b402e8a-7c35-4915-8c72-07ea7779ab76"
+                  },
                 ]
               },
               user: {
-                type: "users",
-                id: "6a45992f-cd20-497a-a753-21b2a1a82356"
+                linkage: {
+                  type: "users",
+                  id: "6a45992f-cd20-497a-a753-21b2a1a82356"
+                }
               }
             },
           },
@@ -98,12 +105,13 @@ module Responses
             links: {
               self: "http://localhost:3000/api/posts/ea006f14-6d05-4e87-bfe7-ee8ae3358840",
               comments: {
-                type: "comments",
-                id: []
+                linkage: []
               },
               user: {
-                type: "users",
-                id: "d65dda70-73eb-461a-bb34-5484e6e8c194"
+                linkage: {
+                  type: "users",
+                  id: "d65dda70-73eb-461a-bb34-5484e6e8c194"
+                }
               }
             }
           }
@@ -160,14 +168,18 @@ module Responses
           links: {
             self: "http://localhost:3000/api/posts/e6d1b7ac-80d8-40dd-877d-f5bd40feabfb",
             comments: {
-              type: "comments",
-              id: [
-                "82083863-bba9-480e-a281-f5d34e7dc0ca"
+              linkage: [
+                {
+                  type: "comments",
+                  id: "82083863-bba9-480e-a281-f5d34e7dc0ca"
+                }
               ]
             },
             user: {
-              type: "users",
-              id: "6a45992f-cd20-497a-a753-21b2a1a82356"
+              linkage: {
+                type: "users",
+                id: "6a45992f-cd20-497a-a753-21b2a1a82356"
+              }
             }
           }
         },

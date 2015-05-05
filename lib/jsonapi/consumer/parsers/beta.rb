@@ -14,13 +14,14 @@ module JSONAPI::Consumer::Parsers
     def associations(item)
       associations = {}
       item.fetch(:links, {}).except(:self).each do |assoc_name, assoc_info|
-        associations[assoc_name] = if assoc_info.is_a?(Hash)
-                                     ids = assoc_info[:id]
-                                     if ids.is_a?(Array)
-                                       ids.collect {|id| find_included(assoc_name, id) }
-                                     elsif ids.is_a?(String)
-                                       find_included(assoc_name, ids)
-                                     end
+        linkage = assoc_info[:linkage]
+
+        associations[assoc_name] = if linkage.is_a?(Hash)
+                                      ids = linkage[:id]
+                                      find_included(assoc_name, ids)
+                                   elsif linkage.is_a?(Array)
+                                      ids = linkage.collect{ |single_link| single_link[:id] }
+                                      ids.collect {|id| find_included(assoc_name, id) }
                                    end
       end
       associations
