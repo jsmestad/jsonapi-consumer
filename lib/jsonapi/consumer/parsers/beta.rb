@@ -17,9 +17,9 @@ module JSONAPI::Consumer::Parsers
         associations[assoc_name] = if assoc_info.is_a?(Hash)
                                      ids = assoc_info[:id]
                                      if ids.is_a?(Array)
-                                       ids.collect {|id| find_linked(assoc_name, id) }
+                                       ids.collect {|id| find_included(assoc_name, id) }
                                      elsif ids.is_a?(String)
-                                       find_linked(assoc_name, ids)
+                                       find_included(assoc_name, ids)
                                      end
                                    end
       end
@@ -39,22 +39,22 @@ module JSONAPI::Consumer::Parsers
       links
     end
 
-    def fetch_linked(assoc_name, id)
+    def fetch_included(assoc_name, id)
       klass._association_class_name(assoc_name).find(id)
     end
 
-    def find_linked(assoc_name, id)
-      if found = linked.detect {|h| h.fetch(:id) == id and h.fetch(:type) == assoc_name.pluralize }
+    def find_included(assoc_name, id)
+      if found = included.detect {|h| h.fetch(:id) == id and h.fetch(:type) == assoc_name.pluralize }
         klass._association_class_name(assoc_name).new(found.except(:type, :links), false)
       else
-        raise JSONAPI::Consumer::Errors::ResponseError, "Could not find linked resource #{assoc_name.pluralize} matching identifier #{id}"
+        raise JSONAPI::Consumer::Errors::ResponseError, "Could not find included resource #{assoc_name.pluralize} matching identifier #{id}"
         # This means its a bad payload
-        # fetch_linked(assoc_name, id)
+        # fetch_included(assoc_name, id)
       end
     end
 
-    def linked
-      _body.fetch(:linked, {})
+    def included
+      _body.fetch(:included, [])
     end
 
     def _body

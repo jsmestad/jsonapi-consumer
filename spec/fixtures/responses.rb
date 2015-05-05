@@ -108,7 +108,7 @@ module Responses
             }
           }
         ],
-        linked: [
+        included: [
           {
             id: "6a45992f-cd20-497a-a753-21b2a1a82356",
             type: "users",
@@ -171,7 +171,7 @@ module Responses
             }
           }
         },
-        linked: [
+        included: [
           {
             id: "6a45992f-cd20-497a-a753-21b2a1a82356",
             type: "users",
