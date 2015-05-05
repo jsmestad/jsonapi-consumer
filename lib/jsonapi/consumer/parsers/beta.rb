@@ -66,9 +66,17 @@ module JSONAPI::Consumer::Parsers
     end
 
     def extract
-      _body.fetch(:data, []).collect do |attrs|
-        attrs_hash = attributes(attrs).merge(associations(attrs))
+      body_data          = _body.fetch(:data)
+      is_single_resource = body_data.is_a?(Hash)
+
+      if is_single_resource
+        attrs_hash = attributes(body_data).merge(associations(body_data))
         klass.new(attrs_hash, false)
+      else
+        body_data.collect do |resource|
+          attrs_hash = attributes(resource).merge(associations(resource))
+          klass.new(attrs_hash, false)
+        end 
       end
     end
 

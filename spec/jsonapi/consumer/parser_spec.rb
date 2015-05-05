@@ -19,13 +19,35 @@ end
 
 RSpec.describe 'Response Parsing' do
 
-  subject(:results) { parser.build }
+  subject(:result) { parser.build }
 
   context 'for Beta JSONAPI' do
-    let(:response) { OpenStruct.new(body: Responses::Beta.sideload) }
     let(:parser) { JSONAPI::Consumer::Parsers::Beta.new(Blog::Post, response) }
 
-    it_behaves_like 'a valid parser'
+    context "for a collection" do
+      let(:response) { OpenStruct.new(body: Responses::Beta.collection) }
+      let(:first_item) { result.first }
+    
+      it 'contains all records' do
+        expect(result.size).to eql(2)
+      end
+
+      it 'loads related comments' do
+        expect(first_item.comments.size).to eql(2)
+      end
+
+      it 'casts to an instance of a class' do
+        expect(first_item.user).to be_a(Blog::User)
+      end
+    end
+
+    context "for a single resource" do
+      let(:response) { OpenStruct.new(body: Responses::Beta.single_resource) }
+
+      it 'casts to an instance of a class' do
+        expect(result).to be_a(Blog::Post)
+      end
+    end
   end
 end
 

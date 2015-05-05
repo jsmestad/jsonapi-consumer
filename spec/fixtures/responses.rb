@@ -65,7 +65,7 @@ module Responses
   end
 
   module Beta
-    def self.sideload
+    def self.collection
       {
         data: [
           {
@@ -149,5 +149,49 @@ module Responses
       }.with_indifferent_access
     end
 
+    def self.single_resource
+      {
+        data: {
+          id: "e6d1b7ac-80d8-40dd-877d-f5bd40feabfb",
+          type: "posts",
+          title: "Friday Post",
+          created_at: "2014-10-19T22:32:52.913Z",
+          updated_at: "2014-10-19T22:32:52.967Z",
+          links: {
+            self: "http://localhost:3000/api/posts/e6d1b7ac-80d8-40dd-877d-f5bd40feabfb",
+            comments: {
+              type: "comments",
+              id: [
+                "82083863-bba9-480e-a281-f5d34e7dc0ca"
+              ]
+            },
+            user: {
+              type: "users",
+              id: "6a45992f-cd20-497a-a753-21b2a1a82356"
+            }
+          }
+        },
+        linked: [
+          {
+            id: "6a45992f-cd20-497a-a753-21b2a1a82356",
+            type: "users",
+            name: "Jane Smith",
+            links: {
+              self: "http://localhost:3000/api/users/6a45992f-cd20-497a-a753-21b2a1a82356"
+            }
+          },
+          {
+            id: "82083863-bba9-480e-a281-f5d34e7dc0ca",
+            type: "comments",
+            content: "Awesome article",
+            created_at: "2014-10-19T22:32:52.933Z",
+            updated_at: "2014-10-19T22:32:52.969Z",
+            links: {
+              self: "http://localhost:3000/api/comments/82083863-bba9-480e-a281-f5d34e7dc0ca"
+            }
+          }
+        ]
+      }.with_indifferent_access
+    end
   end
 end
