@@ -8,7 +8,7 @@ module JSONAPI::Consumer
     end
 
     def attributes(item)
-      item.except(:links)
+      item.except(:links, :type, :href)
     end
 
     def associations(item)
@@ -60,7 +60,7 @@ module JSONAPI::Consumer
     def build
       _body.fetch(klass.json_key, []).collect do |attrs|
         attrs_hash = attributes(attrs).merge(associations(attrs))
-        klass.new(attrs_hash)
+        klass.new(attrs_hash, false)
       end
     end
 

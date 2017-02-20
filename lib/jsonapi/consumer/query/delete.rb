@@ -5,6 +5,10 @@ module JSONAPI::Consumer::Query
     def params
       nil
     end
+
+    def persisted?
+      true
+    end
   end
 end
 
