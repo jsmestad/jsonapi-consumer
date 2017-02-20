@@ -1,8 +1,9 @@
 module Responses
   def self.sideload
     {
-      posts: [
+      data: [
         {
+          type: :posts,
           links: {
             comments: [
               "82083863-bba9-480e-a281-f5d34e7dc0ca",
@@ -16,6 +17,7 @@ module Responses
           updated_at: "2014-10-19T22:32:52.967Z"
         },
         {
+          type: :posts,
           links: {
             comments: [
               "9c9ba83b-024c-4d4c-9573-9fd41b95fc14",
@@ -32,22 +34,26 @@ module Responses
       linked: {
         users: [
           {
+            type: :users,
             id: "6a45992f-cd20-497a-a753-21b2a1a82356",
             name: "Jane Smith"
           },
           {
+            type: :users,
             id: "d65dda70-73eb-461a-bb34-5484e6e8c194",
             name: "Jim Bob"
           }
         ],
         comments: [
           {
+            type: :users,
             id: "82083863-bba9-480e-a281-f5d34e7dc0ca",
             content: "Awesome article",
             created_at: "2014-10-19T22:32:52.933Z",
             updated_at: "2014-10-19T22:32:52.969Z"
           },
           {
+            type: :users,
             id: "3b402e8a-7c35-4915-8c72-07ea7779ab76",
             content: "Hated it",
             created_at: "2014-10-19T22:32:52.933Z",
