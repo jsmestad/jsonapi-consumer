@@ -22,7 +22,7 @@ module JSONAPI::Consumer
       end
 
       def json_key
-        self.name.demodulize.pluralize.underscore
+        'data'
       end
 
       def host
@@ -30,7 +30,7 @@ module JSONAPI::Consumer
       end
 
       def path
-        json_key
+        self.name.demodulize.pluralize.underscore
       end
 
       def ssl
