@@ -6,5 +6,4 @@ gemspec
 
 gem 'rake'
 gem 'appraisal'
-
-gem "codeclimate-test-reporter", group: :test, require: nil
+gem 'minitest-ci'

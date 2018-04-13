@@ -1,12 +1,10 @@
 require "bundler/setup"
 require "jsonapi/consumer"
 
-require 'simplecov'
-SimpleCov.start
 require 'minitest/autorun'
 require 'webmock/minitest'
 require 'mocha/minitest'
-require 'pp'
+require 'minitest/ci' if ENV['CI']
 
 # shim for ActiveSupport 4.0.x requiring minitest 4.2
 unless defined?(Minitest::Test)

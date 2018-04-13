@@ -1,0 +1,27 @@
+# Ruby CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-ruby/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      # specify the version you desire here
+      - image: circleci/ruby:2.5
+    working_directory: ~/jsonapi_consumer
+
+    steps:
+      - checkout
+
+      - run:
+          name: install dependencies
+          command: |
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
+
+      - run:
+          command: env CI=true bundle exec rake test
+          when: always
+
+      # collect reports
+      - store_test_results:
+          path: /tmp/reports
