@@ -2,7 +2,7 @@
 
 An ActiveModel-compliant consumer framework for communicating with JSONAPI-based APIs.
 
-[![CircleCI](https://circleci.com/gh/jsmestad/jsonapi-consumer.svg?style=svg)](https://circleci.com/gh/jsmestad/jsonapi-consumer)
+[![CircleCI](https://circleci.com/gh/jsmestad/jsonapi-consumer/tree/master.svg?style=svg)](https://circleci.com/gh/jsmestad/jsonapi-consumer/tree/master)
 
 ## Installation
 
