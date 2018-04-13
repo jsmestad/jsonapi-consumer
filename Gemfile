@@ -1,7 +1,10 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
-# Specify your gem's dependencies in jsonapi-consumer.gemspec
+git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
+
 gemspec
 
-gem 'fsevent'
-gem 'guard-rspec', require: false
+gem 'rake'
+gem 'appraisal'
+
+gem "codeclimate-test-reporter", group: :test, require: nil

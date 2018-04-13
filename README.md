@@ -4,10 +4,6 @@ An ActiveModel-compliant consumer framework for communicating with JSONAPI-based
 
 [![Build Status](https://travis-ci.org/jsmestad/jsonapi-consumer.svg?branch=develop)](https://travis-ci.org/jsmestad/jsonapi-consumer)
 
-## Note on develop branch
-
-`master` works with previous JSONAPI standards. The `develop` branch supports
-only the latest JSONAPI standard (which is RC3 as of Mar 2015).
 
 ## Installation
 
@@ -58,32 +54,6 @@ module Blog
 end
 ```
 
-#### Additional Features
-
-##### Dynamic Objects
-
-By default calling `.new` or `.build` on a resource will give you an empty
-object with no attributes defined. This is less than ideal when building forms
-with something like Rails' FormBuilder.
-
-We suggest setting up your model to do a `GET /{resource_name}/new` if your
-server supports it and using `.build` instead of `.new`. This will populate the
-object with defaults set by the server response.
-
-```ruby
-class User
-  include JSONAPI::Consumer::Resource
-
-  self.request_new_object_on_build = true
-
-  # .build will now call GET /users/new
-end
-```
-
-#### Testing
-
-We suggest [Webmock](https://github.com/bblimke/webmock) at this stage in
-development. We plan to add test helpers before the first major release.
 
 ## Contributing
 
@@ -96,3 +66,5 @@ development. We plan to add test helpers before the first major release.
 ## Copyright & License
 
 JSONAPI::Consumer is distributed under the Apache 2.0 License. See LICENSE.txt file for more information.
+
+Version v1 is a rewrite is based on the excellent work by [json_api_client](https://github.com/chingor13/json_api_client) [v1.5.3](https://github.com/chingor13/json_api_client/tree/v1.5.3).
