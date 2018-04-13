@@ -4,11 +4,6 @@ An ActiveModel-compliant consumer framework for communicating with JSONAPI-based
 
 [![CircleCI](https://circleci.com/gh/jsmestad/jsonapi-consumer.svg?style=svg)](https://circleci.com/gh/jsmestad/jsonapi-consumer)
 
-
-## JSONAPI Compatibility
-
-The [master branch](https://github.com/jsmestad/jsonapi-consumer/tree/master) is features compatibility with JSONAPI (prior to RC). If you are looking for JSONAPI RC3 (soon to be 1.0) check out the [develop branch](https://github.com/jsmestad/jsonapi-consumer/tree/develop) for that.
-
 ## Installation
 
 Add this line to your application's Gemfile:
