@@ -9,7 +9,7 @@ An ActiveModel-compliant consumer framework for communicating with JSONAPI-based
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'jsonapi-consumer', github: 'jsmestad/jsonapi-consumer', branch: 'develop'
+gem 'jsonapi-consumer', '~> 1.0'
 ```
 
 And then execute:
