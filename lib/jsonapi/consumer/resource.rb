@@ -164,13 +164,13 @@ module JSONAPI::Consumer
 
       # Run a command wrapped in an Authorization header
       #
-      def self.authorize_with(jwt, &block)
+      def authorize_with(jwt, &block)
         with_headers(authorization: %(Bearer #{jwt}), &block)
       end
 
       # Set the Authorization header to a JWT value
       #
-      def self.authorize_with=(jwt)
+      def authorize_with=(jwt)
         if jwt.nil?
           self._custom_headers = {authorization: nil}
         else
@@ -180,22 +180,21 @@ module JSONAPI::Consumer
 
       # Clears the Authorization header
       #
-      def self.clear_authorization!
+      def clear_authorization!
         self.authorize_with = nil
       end
 
       # @return [String] The Authorization header
-      def self.authorized_as
+      def authorized_as
         custom_headers[:authorization]
       end
 
       # Returns based on the presence of an Authorization header
       #
       # @return [Boolean]
-      def self.authorized?
+      def authorized?
         !custom_headers[:authorization].nil?
       end
-
 
       # Returns the requestor for this resource class
       #
@@ -325,7 +324,7 @@ module JSONAPI::Consumer
       end
 
       def _header_store
-        Thread.current["jsonapi/consumer-#{resource_name}"] ||= {}
+        Thread.current["json_api_client-#{resource_name}"] ||= {}
       end
 
       def _build_connection(rebuild = false)

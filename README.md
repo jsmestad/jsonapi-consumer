@@ -22,10 +22,11 @@ And then execute:
 It's suggested to create a base resource for the whole API that you can re-use.
 
 ```ruby
-class Base
-  include JSONAPI::Consumer::Resource
-
-  self.host = 'http://localhost:3000/api/'
+class Base < JSONAPI::Consumer::Resource
+  # self.connection_options = {} # Faraday connection options
+  # self.json_key_format = :dasherized_key # (default: underscored_key)
+  # self.route_format = :dasherized_route # (default: underscored_route)
+  self.site = 'http://localhost:3000/api/'
 end
 ```
 
@@ -33,7 +34,6 @@ Then inherit from that Base class for each resource defined in your API.
 
 ```ruby
 module Blog
-
   class Author < Base
     has_many :posts, class_name: 'Blog::Post'
   end
@@ -50,7 +50,6 @@ module Blog
   class Comment < Base
 
   end
-
 end
 ```
 
