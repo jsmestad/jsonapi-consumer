@@ -1,7 +1,5 @@
 # Taken form jsonapi_resources formatter
 
-require 'active_support/inflector'
-
 module JSONAPI::Consumer
   class Formatter
     class << self

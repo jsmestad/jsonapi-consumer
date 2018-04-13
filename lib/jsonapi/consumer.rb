@@ -1,9 +1,12 @@
 require "jsonapi/consumer/version"
+require "active_support/core_ext"
+require "active_support/inflector"
+require "active_model"
+require "forwardable"
 
 require "faraday"
 require "faraday_middleware"
 require "addressable/uri"
-require "active_support/core_ext/string"
 
 module JSONAPI
   module Consumer
