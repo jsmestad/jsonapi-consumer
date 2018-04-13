@@ -1,6 +1,7 @@
 require "jsonapi/consumer/version"
-require "active_support/core_ext"
+require "active_support"
 require "active_support/inflector"
+require "active_support/core_ext"
 require "active_model"
 require "forwardable"
 
