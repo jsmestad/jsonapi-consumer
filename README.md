@@ -2,7 +2,8 @@
 
 An ActiveModel-compliant consumer framework for communicating with JSONAPI-based APIs.
 
-[![Build Status](https://travis-ci.org/jsmestad/jsonapi-consumer.svg?branch=master)](https://travis-ci.org/jsmestad/jsonapi-consumer)
+[![CircleCI](https://circleci.com/gh/jsmestad/jsonapi-consumer.svg?style=svg)](https://circleci.com/gh/jsmestad/jsonapi-consumer)
+
 
 ## JSONAPI Compatibility
 
@@ -13,26 +14,23 @@ The [master branch](https://github.com/jsmestad/jsonapi-consumer/tree/master) is
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'jsonapi-consumer'
+gem 'jsonapi-consumer', github: 'jsmestad/jsonapi-consumer', branch: 'develop'
 ```
 
 And then execute:
 
     $ bundle
 
-Or install it yourself as:
-
-    $ gem install jsonapi-consumer
-
 ## Usage
 
 It's suggested to create a base resource for the whole API that you can re-use.
 
 ```ruby
-class Base
-  include JSONAPI::Consumer::Resource
-
-  self.host = 'http://localhost:3000/api/'
+class Base < JSONAPI::Consumer::Resource
+  # self.connection_options = {} # Faraday connection options
+  # self.json_key_format = :dasherized_key # (default: underscored_key)
+  # self.route_format = :dasherized_route # (default: underscored_route)
+  self.site = 'http://localhost:3000/api/'
 end
 ```
 
@@ -40,7 +38,6 @@ Then inherit from that Base class for each resource defined in your API.
 
 ```ruby
 module Blog
-
   class Author < Base
     has_many :posts, class_name: 'Blog::Post'
   end
@@ -57,36 +54,9 @@ module Blog
   class Comment < Base
 
   end
-
 end
 ```
 
-#### Additional Features
-
-##### Dynamic Objects
-
-By default calling `.new` or `.build` on a resource will give you an empty
-object with no attributes defined. This is less than ideal when building forms
-with something like Rails' FormBuilder.
-
-We suggest setting up your model to do a `GET /{resource_name}/new` if your
-server supports it and using `.build` instead of `.new`. This will populate the
-object with defaults set by the server response.
-
-```ruby
-class User
-  include JSONAPI::Consumer::Resource
-
-  self.request_new_object_on_build = true
-
-  # .build will now call GET /users/new
-end
-```
-
-#### Testing
-
-We suggest [Webmock](https://github.com/bblimke/webmock) at this stage in
-development. We plan to add test helpers before the first major release.
 
 ## Contributing
 
@@ -99,3 +69,5 @@ development. We plan to add test helpers before the first major release.
 ## Copyright & License
 
 JSONAPI::Consumer is distributed under the Apache 2.0 License. See LICENSE.txt file for more information.
+
+Version v1 is a rewrite is based on the excellent work by [json_api_client](https://github.com/chingor13/json_api_client) [v1.5.3](https://github.com/chingor13/json_api_client/tree/v1.5.3).
