@@ -491,7 +491,12 @@ module JSONAPI::Consumer
 
       # look in included data
       if relationship_definitions.key?("data")
-        return last_result_set.included.data_for(method, relationship_definitions)
+        # included.data_for returns an array, if the association is a has_one, then pick the first, otherise return the whole array
+        if association.is_a?(JSONAPI::Consumer::Associations::HasOne::Association)
+          return last_result_set.included.data_for(method, relationship_definitions).try(:first)
+        else
+          return last_result_set.included.data_for(method, relationship_definitions)
+        end
       end
 
       if association = association_for(method)

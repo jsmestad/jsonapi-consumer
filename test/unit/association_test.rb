@@ -125,6 +125,41 @@ class AssociationTest < MiniTest::Test
     assert_equal("Jeff Ching", property.owner.name)
   end
 
+  def test_load_has_one_without_include
+    stub_request(:get, "http://example.com/properties/1")
+      .to_return(headers: {content_type: "application/vnd.api+json"}, body: {
+        data: [
+          {
+            id: 1,
+            attributes: {
+              address: "123 Main St."
+            },
+            relationships: {
+              owner: {
+                data: {id: 1, type: "owner"}
+              }
+            }
+          }
+        ]
+
+      }.to_json)
+    stub_request(:get, "http://example.com/owners/1")
+      .to_return(headers: {content_type: "application/vnd.api+json"}, body: {
+        data: [
+          {
+            id: 1,
+            type: "owner",
+            attributes: {
+              name: "Jeff Ching"
+            }
+          }
+        ]
+      }.to_json)
+    property = Property.find(1).first
+    assert_equal(Owner, property.owner.class)
+    assert_equal("Jeff Ching", property.owner.name)
+  end
+
   def test_has_one_loads_nil
     stub_request(:get, "http://example.com/properties/1")
       .to_return(headers: {content_type: "application/vnd.api+json"}, body: {
