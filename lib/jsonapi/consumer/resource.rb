@@ -48,7 +48,7 @@ module JSONAPI::Consumer
     class << self
       extend Forwardable
       include Helpers::ThreadsafeAttributes
-      threadsafe_attribute :_header_store, :_connection, :_connection_class, :_site, :_connection_options
+      threadsafe_attribute :_connection, :_connection_class, :_site, :_connection_options, :_headers
       def_delegators :_new_scope, :where, :order, :includes, :select, :all, :paginate, :page, :with_params, :first, :find, :last
 
       # The table name for this resource. i.e. Article -> articles, Person -> people
@@ -161,7 +161,7 @@ module JSONAPI::Consumer
       # @return [Connection] The connection to the json api server
       def connection(rebuild = false)
         if _connection_defined? || superclass == Object
-          self._connection = connection_class.new((connection_options || {}).merge(site: site)).tap do |conn|
+          self._connection = connection_class.new({site: site}.merge(connection_options.to_h)).tap do |conn|
             yield(conn) if block_given?
           end if rebuild || _connection.nil?
           _connection
@@ -209,10 +209,14 @@ module JSONAPI::Consumer
       # @param headers [Hash] The headers to send along
       # @param block [Block] The block where headers will be set for
       def with_headers(headers)
-        self._custom_headers = headers
+        self.headers = headers
         yield
       ensure
-        self._custom_headers = {}
+        self.headers = {}
+      end
+
+      def headers=(h)
+        self._headers = headers.merge(h)
       end
 
       # The current custom headers to send with any request made by this
@@ -220,8 +224,13 @@ module JSONAPI::Consumer
       # set on the base class.
       #
       # @return [Hash] Headers
-      def custom_headers
-        header_store
+      def headers
+        self._headers ||= {}
+        if superclass != Object && superclass.headers
+          self._headers = superclass.headers.merge(_headers)
+        else
+          _headers
+        end
       end
 
       # Run a command wrapped in an Authorization header
@@ -234,9 +243,9 @@ module JSONAPI::Consumer
       #
       def authorize_with=(jwt)
         if jwt.nil?
-          self._custom_headers = {authorization: nil}
+          self.headers = {authorization: nil}
         else
-          self._custom_headers = {authorization: %(Bearer #{jwt})}
+          self.headers = {authorization: %(Bearer #{jwt})}
         end
       end
 
@@ -248,14 +257,14 @@ module JSONAPI::Consumer
 
       # @return [String] The Authorization header
       def authorized_as
-        custom_headers[:authorization]
+        headers[:authorization]
       end
 
       # Returns based on the presence of an Authorization header
       #
       # @return [Boolean]
       def authorized?
-        !custom_headers[:authorization].nil?
+        !headers[:authorization].nil?
       end
 
       # Returns the requestor for this resource class
@@ -379,20 +388,6 @@ module JSONAPI::Consumer
 
       def _new_scope
         query_builder.new(self)
-      end
-
-      def _custom_headers=(headers)
-        header_store.replace(headers)
-      end
-
-      def header_store
-        self._header_store ||= {}
-
-        if superclass != Object && superclass.header_store
-          self._header_store = superclass.header_store.merge(_header_store)
-        else
-          _header_store
-        end
       end
     end
 

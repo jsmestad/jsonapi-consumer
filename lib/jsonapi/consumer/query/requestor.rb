@@ -59,7 +59,7 @@ module JSONAPI::Consumer
       end
 
       def request(type, path, params)
-        klass.parser.parse(klass, connection.run(type, path, params, klass.custom_headers))
+        klass.parser.parse(klass, connection.run(type, path, params, klass.headers))
       end
 
     end

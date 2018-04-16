@@ -1,4 +1,5 @@
 require "bundler/setup"
+require "pry"
 require "jsonapi/consumer"
 
 require 'minitest/autorun'
