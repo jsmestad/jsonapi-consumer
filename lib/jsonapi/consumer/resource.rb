@@ -13,13 +13,9 @@ module JSONAPI::Consumer
     attr_accessor :last_result_set,
                   :links,
                   :relationships
-    class_attribute :site,
-                    :primary_key,
+    class_attribute :primary_key,
                     :parser,
                     :paginator,
-                    :connection_class,
-                    :connection_object,
-                    :connection_options,
                     :query_builder,
                     :linker,
                     :relationship_linker,
@@ -32,8 +28,6 @@ module JSONAPI::Consumer
     self.primary_key          = :id
     self.parser               = Parsers::Parser
     self.paginator            = Paginating::Paginator
-    self.connection_class     = Connection
-    self.connection_options   = {}
     self.query_builder        = Query::Builder
     self.linker               = Linking::Links
     self.relationship_linker  = Relationships::Relations
@@ -53,6 +47,8 @@ module JSONAPI::Consumer
 
     class << self
       extend Forwardable
+      include Helpers::ThreadsafeAttributes
+      threadsafe_attribute :_header_store, :_connection, :_connection_class, :_site, :_connection_options
       def_delegators :_new_scope, :where, :order, :includes, :select, :all, :paginate, :page, :with_params, :first, :find, :last
 
       # The table name for this resource. i.e. Article -> articles, Person -> people
@@ -60,6 +56,71 @@ module JSONAPI::Consumer
       # @return [String] The table name for this resource
       def table_name
         route_formatter.format(resource_name.pluralize)
+      end
+
+      def connection_class
+        if _connection_class_defined?
+          _connection_class
+        elsif superclass != Object && superclass.connection_class
+          superclass.connection_class
+        else
+          Connection
+        end
+      end
+
+      def connection_class=(conn_class)
+        self._connection = nil
+
+        if connection_class.nil?
+          self._connection_class = nil
+        else
+          self._connection_class = conn_class
+        end
+      end
+
+      # Returns the connection options to be used in Faraday
+      #
+      # @return [Hash,NilClass]
+      def connection_options
+        if _connection_options_defined?
+          _connection_options
+        elsif superclass != Object && superclass.connection_options
+          superclass.connection_options.dup.freeze
+        end
+      end
+
+      # Sets the connection options directly in Faraday
+      #
+      def connection_options=(connection_options)
+        self._connection = nil
+
+        if connection_options.nil?
+          self._connection_options = nil
+        else
+          self._connection_options = connection_options
+        end
+      end
+
+      # Sets the URI.
+      # The site variable is required for JSONAPI::Consumer to work.
+      def site
+        if _site_defined?
+          _site
+        elsif superclass != Object && superclass.site
+          superclass.site.dup.freeze
+        end
+      end
+
+      # Sets the URI.
+      # The site variable is required for JSONAPI::Consumer to work.
+      def site=(site)
+        self._connection = nil
+
+        if site.nil?
+          self._site = nil
+        else
+          self._site = site
+        end
       end
 
       # The name of a single resource. i.e. Article -> article, Person -> person
@@ -98,9 +159,15 @@ module JSONAPI::Consumer
       # Return/build a connection object
       #
       # @return [Connection] The connection to the json api server
-      def connection(rebuild = false, &block)
-        _build_connection(rebuild, &block)
-        connection_object
+      def connection(rebuild = false)
+        if _connection_defined? || superclass == Object
+          self._connection = connection_class.new((connection_options || {}).merge(site: site)).tap do |conn|
+            yield(conn) if block_given?
+          end if rebuild || _connection.nil?
+          _connection
+        else
+          superclass.connection
+        end
       end
 
       # Param names that will be considered path params. They will be used
@@ -154,9 +221,7 @@ module JSONAPI::Consumer
       #
       # @return [Hash] Headers
       def custom_headers
-        return _header_store.to_h if superclass == Object
-
-        superclass.custom_headers.merge(_header_store.to_h)
+        header_store
       end
 
       # Run a command wrapped in an Authorization header
@@ -317,17 +382,16 @@ module JSONAPI::Consumer
       end
 
       def _custom_headers=(headers)
-        _header_store.replace(headers)
+        header_store.replace(headers)
       end
 
-      def _header_store
-        Thread.current["json_api_client-#{resource_name}"] ||= {}
-      end
+      def header_store
+        self._header_store ||= {}
 
-      def _build_connection(rebuild = false)
-        return connection_object unless connection_object.nil? || rebuild
-        self.connection_object = connection_class.new(connection_options.merge(site: site)).tap do |conn|
-          yield(conn) if block_given?
+        if superclass != Object && superclass.header_store
+          self._header_store = superclass.header_store.merge(_header_store)
+        else
+          _header_store
         end
       end
     end
