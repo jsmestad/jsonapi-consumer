@@ -21,6 +21,7 @@ class CustomConnectionResource < TestResource
 end
 
 class InheritedConnectionResource < CustomConnectionResource
+  self.authorize_with = "12345"
 end
 
 class CustomAdapterResource < TestResource
@@ -47,6 +48,19 @@ class ConnectionTest < MiniTest::Test
 
     NullConnection.any_instance.expects(:run)
     CustomConnectionResource.find(1)
+  end
+
+  def test_child_authorization_inheritance
+    refute CustomConnectionResource.authorized?
+    assert InheritedConnectionResource.authorized?
+
+    assert_nil CustomConnectionResource.authorized_as
+    assert_equal InheritedConnectionResource.authorized_as, 'Bearer 12345'
+
+    CustomConnectionResource.authorize_with = '098765'
+    assert CustomConnectionResource.authorized?
+    assert_equal CustomConnectionResource.authorized_as, 'Bearer 098765'
+    assert_equal InheritedConnectionResource.authorized_as, 'Bearer 12345'
   end
 
   def test_child_inherits_parents_connection

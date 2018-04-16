@@ -3,8 +3,8 @@ module JSONAPI::Consumer
 
     attr_reader :faraday
 
-    def initialize(options = {})
-      site = options.fetch(:site)
+    def initialize(site, options = {})
+      site = site
       connection_options = options.slice(:proxy, :ssl, :request, :headers, :params)
       adapter_options = Array(options.fetch(:adapter, Faraday.default_adapter))
       @faraday = Faraday.new(site, connection_options) do |builder|

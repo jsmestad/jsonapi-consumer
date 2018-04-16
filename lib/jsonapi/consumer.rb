@@ -24,6 +24,7 @@ module JSONAPI
       autoload :Dirty, 'jsonapi/consumer/helpers/dirty'
       autoload :DynamicAttributes, 'jsonapi/consumer/helpers/dynamic_attributes'
       autoload :URI, 'jsonapi/consumer/helpers/uri'
+      autoload :ThreadsafeAttributes, 'jsonapi/consumer/helpers/threadsafe_attributes'
     end
 
     module Linking
