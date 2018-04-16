@@ -68,13 +68,13 @@ module JSONAPI::Consumer
         end
       end
 
-      def connection_class=(conn_class)
+      def connection_class=(connection_class)
         self._connection = nil
 
         if connection_class.nil?
           self._connection_class = nil
         else
-          self._connection_class = conn_class
+          self._connection_class = connection_class
         end
       end
 
@@ -161,7 +161,7 @@ module JSONAPI::Consumer
       # @return [Connection] The connection to the json api server
       def connection(rebuild = false)
         if _connection_defined? || superclass == Object
-          self._connection = connection_class.new({site: site}.merge(connection_options.to_h)).tap do |conn|
+          self._connection = connection_class.new(site, connection_options.to_h).tap do |conn|
             yield(conn) if block_given?
           end if rebuild || _connection.nil?
           _connection
