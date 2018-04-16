@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'test_helper'
 
 class Owner < TestResource
@@ -91,6 +92,79 @@ class AssociationTest < MiniTest::Test
              }.to_json)
     property = Property.includes(:owner).find(1).first
     assert_equal("Jeff Ching", property.owner.name)
+  end
+
+  def test_removing_has_one_association
+    stub_request(:get, "http://example.com/properties/1?include=owner")
+        .to_return(
+            headers: {
+                content_type: "application/vnd.api+json"
+            }, body: {
+                 data: [
+                     {
+                         id: 1,
+                         attributes: {
+                             address: "123 Main St."
+                         },
+                         relationships: {
+                             owner: {
+                                 data: {id: 1, type: 'owner'}
+                             }
+                         }
+                     }
+                 ],
+                 included: [
+                     {
+                         id: 1,
+                         type: 'owner',
+                         attributes: {
+                             name: 'Jeff Ching'
+                         }
+                     }
+                 ]
+
+             }.to_json)
+
+    stub_request(:patch, "http://example.com/properties/1")
+      .with(
+        headers: {
+          content_type: "application/vnd.api+json"
+        }, body: {
+          data: {
+            id: 1,
+            type: "properties",
+            relationships: {
+              owner: {
+                data: nil
+              }
+            },
+            attributes: {}
+          }
+        }.to_json)
+      .to_return(
+        headers: {
+          content_type: "application/vnd.api+json"
+        }, body: {
+          data: [
+            {
+              id: 1,
+              attributes: {
+                address: "123 Main St."
+              },
+              relationships: {
+                owner: {
+                  data: nil
+                }
+              }
+            }
+          ]
+        }.to_json)
+    property = Property.includes(:owner).find(1).first
+    assert_equal("Jeff Ching", property.owner.name)
+
+    property.relationships.owner = nil
+    property.save
+    assert_nil(property.owner)
   end
 
   def test_load_has_one_without_include
