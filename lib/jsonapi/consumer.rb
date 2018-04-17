@@ -8,6 +8,7 @@ require "forwardable"
 require "faraday"
 require "faraday_middleware"
 require "addressable/uri"
+require "request_store"
 
 module JSONAPI
   module Consumer

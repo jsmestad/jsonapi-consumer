@@ -1,4 +1,3 @@
-
 module JSONAPI::Consumer
   class Resource
     extend ActiveModel::Naming
