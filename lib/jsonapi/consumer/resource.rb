@@ -142,10 +142,11 @@ module JSONAPI::Consumer
       # @param headers [Hash] The headers to send along
       # @param block [Block] The block where headers will be set for
       def with_headers(headers)
+        existing_headers = self.custom_headers
         self._custom_headers = headers
         yield
       ensure
-        self._custom_headers = {}
+        self._custom_headers = existing_headers
       end
 
       # The current custom headers to send with any request made by this
@@ -317,11 +318,11 @@ module JSONAPI::Consumer
       end
 
       def _custom_headers=(headers)
-        _header_store.replace(headers)
+        RequestStore.store["jsonapi-consumer-#{resource_name}"] = headers
       end
 
       def _header_store
-        Thread.current["json_api_client-#{resource_name}"] ||= {}
+        RequestStore.store["jsonapi-consumer-#{resource_name}"] ||= {}
       end
 
       def _build_connection(rebuild = false)
