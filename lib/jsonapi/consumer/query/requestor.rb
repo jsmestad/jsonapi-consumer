@@ -39,7 +39,7 @@ module JSONAPI::Consumer
       def custom(method_name, options, params)
         path = resource_path(params)
         params.delete(klass.primary_key)
-        path = File.join(path, method_name.to_s)
+        path = File.join(path, klass.route_formatter.format(method_name.to_s))
 
         request(options.fetch(:request_method, :get), path, params)
       end

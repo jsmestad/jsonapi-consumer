@@ -4,7 +4,9 @@ class Country < TestResource
 
   custom_endpoint :autocomplete, on: :collection, request_method: :get
   custom_endpoint :publish, on: :member, request_method: :post
+  custom_endpoint :publish_now, on: :member, request_method: :post
 
+  self.route_format = :dasherized_route
 end
 
 class CustomEndpointTest < MiniTest::Test
@@ -37,6 +39,21 @@ class CustomEndpointTest < MiniTest::Test
       name: 'Belgium'
     })
     assert(country.publish)
+  end
+
+  def test_member_post_dasherized
+    stub_request(:post, "http://example.com/countries/1/publish-now")
+      .to_return(headers: {content_type: "application/vnd.api+json"}, body: {
+        data: [
+          {id: 1, name: 'Belgium'}
+        ]
+      }.to_json)
+
+    country = Country.new({
+      id: 1,
+      name: 'Belgium'
+    })
+    assert(country.publish_now)
   end
 
   def test_collection_methods_should_not_add_methods_to_all_classes
