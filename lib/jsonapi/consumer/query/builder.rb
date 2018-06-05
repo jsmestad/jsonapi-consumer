@@ -102,7 +102,7 @@ module JSONAPI::Consumer
       end
 
       def method_missing(method_name, *args, &block)
-        to_a.send(method_name, *args, &block)
+        to_a.public_send(method_name, *args, &block)
       end
 
       private

@@ -40,13 +40,13 @@ def with_altered_config(resource_class, changes)
   old_config_values = {}
   changes.each_pair do |key, value|
     old_config_values[key] = resource_class.send(key)
-    resource_class.send("#{key}=", value)
+    resource_class.public_send("#{key}=", value)
   end
 
   yield
 
   # restore config
   old_config_values.each_pair do |key, value|
-    resource_class.send("#{key}=", old_config_values[key])
+    resource_class.public_send("#{key}=", old_config_values[key])
   end
 end

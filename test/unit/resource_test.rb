@@ -76,8 +76,8 @@ class ResourceTest < MiniTest::Test
       article = Article.new("foo-bam" => "baz")
       # Does not recognize dasherized attributes, fall back to hash syntax
       refute article.respond_to? :foo_bam
-      assert_equal("baz", article.send("foo-bam"))
-      assert_equal("baz", article.send(:"foo-bam"))
+      assert_equal("baz", article.public_send("foo-bam"))
+      assert_equal("baz", article.public_send(:"foo-bam"))
       assert_equal("baz", article["foo-bam"])
       assert_equal("baz", article[:"foo-bam"])
     end

@@ -11,7 +11,7 @@ module JSONAPI::Consumer
 
         return @attributes unless attrs.present?
         attrs.each do |key, value|
-          send("#{key}=", value)
+          public_send("#{key}=", value)
         end
       end
 
@@ -44,7 +44,7 @@ module JSONAPI::Consumer
               attributes[method]
             end
           end
-          return send(method)
+          return public_send(method)
         end
 
         normalized_method = safe_key_formatter.unformat(method.to_s)
