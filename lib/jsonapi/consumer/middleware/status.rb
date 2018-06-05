@@ -12,7 +12,7 @@ module JSONAPI::Consumer
           end
         end
       rescue Faraday::ConnectionFailed, Faraday::TimeoutError
-        raise Errors::ConnectionError, environment
+        raise Errors::ConnectionError.new(nil, environment)
       end
 
       protected
@@ -21,17 +21,17 @@ module JSONAPI::Consumer
         case code
         when 200..399
         when 401
-          raise Errors::NotAuthorized, env
+          raise Errors::NotAuthorized.new(nil, env)
         when 403
-          raise Errors::AccessDenied, env
+          raise Errors::AccessDenied.new(nil, env)
         when 404
-          raise Errors::NotFound, env[:url]
+          raise Errors::NotFound.new(nil, env[:url])
         when 409
-          raise Errors::Conflict, env
+          raise Errors::Conflict.new(nil, env)
         when 400..499
           # some other error
         when 500..599
-          raise Errors::ServerError, env
+          raise Errors::ServerError.new(nil, env)
         else
           raise Errors::UnexpectedStatus.new(code, env[:url])
         end
