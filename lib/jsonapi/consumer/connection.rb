@@ -29,7 +29,7 @@ module JSONAPI::Consumer
     end
 
     def run(request_method, path, params = {}, headers = {})
-      faraday.send(request_method, path, params, headers)
+      faraday.public_send(request_method, path, params, headers)
     end
 
   end
