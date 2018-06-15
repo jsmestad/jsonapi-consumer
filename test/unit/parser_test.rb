@@ -56,4 +56,31 @@ class ParserTest < MiniTest::Test
     assert_nil author
   end
 
+  def test_can_find_namespaced_object
+    stub_request(:get, "http://example.com/articles/1")
+    .to_return(headers: {content_type: "application/vnd.api+json"}, body: {
+      data: {
+        type: "articles",
+        id: "1",
+        attributes: { title: "Rails is Omakase" },
+        relationships: {
+          author: {
+            links: {
+              related: "http://example.com/articles/1/author"
+            }
+          }
+        }
+      }
+    }.to_json)
+
+    articles = Namespaced::Article.find(1)
+    assert articles.is_a?(JSONAPI::Consumer::ResultSet)
+    assert_equal 1, articles.length
+
+    article = articles.first
+    assert_equal "1", article.id
+    assert_equal "Rails is Omakase", article.title
+    assert article.is_a?(Namespaced::Article)
+  end
+
 end
