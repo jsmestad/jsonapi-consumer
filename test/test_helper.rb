@@ -35,6 +35,12 @@ class UserPreference < TestResource
   self.primary_key = :user_id
 end
 
+module Namespaced
+  class Article < TestResource
+    self.namespace = 'namespaced'
+  end
+end
+
 def with_altered_config(resource_class, changes)
   # remember and overwrite config
   old_config_values = {}

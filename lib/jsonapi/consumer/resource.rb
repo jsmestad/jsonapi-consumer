@@ -27,6 +27,7 @@ module JSONAPI::Consumer
                     :associations,
                     :json_key_format,
                     :route_format,
+                    :namespace,
                     instance_accessor: false
     self.primary_key          = :id
     self.parser               = Parsers::Parser
@@ -39,6 +40,7 @@ module JSONAPI::Consumer
     self.read_only_attributes = [:id, :type, :links, :meta, :relationships]
     self.requestor_class      = Query::Requestor
     self.associations         = []
+    self.namespace            = nil
 
     #:underscored_key, :camelized_key, :dasherized_key, or custom
     self.json_key_format = :underscored_key

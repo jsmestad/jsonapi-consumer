@@ -80,7 +80,7 @@ module JSONAPI::Consumer
         def choose_model_for(result_set, res)
           return result_set.record_class unless res['type']
 
-          res_type_name = res['type'].underscore.classify
+          res_type_name = [result_set.record_class.namespace, res['type']].compact.join('/').underscore.classify
           (res_type_name.safe_constantize) ? res_type_name.safe_constantize : result_set.record_class
         end
 
