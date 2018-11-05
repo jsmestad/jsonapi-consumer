@@ -89,6 +89,7 @@ module JSONAPI::Consumer
         @to_a ||= find
       end
       alias all to_a
+      alias to_ary to_a
 
       def find(args = {})
         case args
