@@ -7,7 +7,7 @@ module JSONAPI::Consumer
       end
 
       def attributes=(attrs = {})
-        @attributes ||= ActiveSupport::HashWithIndifferentAccess.new
+        @attributes ||= ActiveSupport::HashWithIndifferentAccess.new(attrs)
 
         return @attributes unless attrs.present?
         attrs.each do |key, value|
