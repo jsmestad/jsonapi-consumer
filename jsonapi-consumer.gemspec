@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "activesupport", '>= 3.2'
   spec.add_runtime_dependency "faraday", '>= 0.9'
   spec.add_runtime_dependency "faraday_middleware"
-  spec.add_runtime_dependency "addressable", '~> 2.5.2'
+  spec.add_runtime_dependency "addressable", '~> 2.8.0'
   spec.add_runtime_dependency "activemodel", '>= 3.2'
   spec.add_runtime_dependency "request_store", '>= 1.4'
 
